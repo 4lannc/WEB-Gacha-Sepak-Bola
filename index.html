@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#030816">
+  <meta name="description" content="Football Match Roulette - Acak 2 tim pertandingan sepak bola anti-bentrok untuk PS, Xbox, PC, dan konsol dengan efek suara dan simulator lempar koin.">
+  <title>Football Match Roulette - Gacha Arena Pro</title>
+
+  <!-- Google Fonts: Rajdhani & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Modular Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= SITE HEADER ================= -->
+  <header class="site-header">
+    <div class="header-container">
+      
+      <!-- Logo Brand -->
+      <div class="brand-wrapper">
+        <div class="brand-icon">
+          <div class="brand-icon-inner">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="m4.93 4.93 4.24 4.24"></path>
+              <path d="m14.83 9.17 4.24-4.24"></path>
+              <path d="m14.83 14.83 4.24 4.24"></path>
+              <path d="m9.17 14.83-4.24 4.24"></path>
+              <circle cx="12" cy="12" r="4"></circle>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="brand-title">
+            GACHA <span class="text-gradient-cyan">ARENA</span>
+            <span class="brand-badge">PRO</span>
+          </div>
+          <p class="brand-tagline">Football Match Roulette & Stik 1 Decider</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="header-actions">
+        <!-- Coin Toss Button -->
+        <button id="btnCoinTossModal" class="btn-icon-text" title="Lempar Koin (Penentu Stik 1 / Tuan Rumah)">
+          <span>🪙</span>
+          <span class="hidden-sm">Lempar Koin</span>
+        </button>
+
+        <!-- Match History Button -->
+        <button id="btnOpenHistory" class="btn-icon-text" title="Buka Riwayat Undian">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span class="hidden-sm">Riwayat</span>
+          <span id="historyCountBadge" class="badge-count" style="display: none;">0</span>
+        </button>
+
+        <!-- Audio Toggle Button -->
+        <button id="btnSoundToggle" class="btn-icon-text" title="Toggle Efek Suara">
+          <span id="soundIcon">🔊</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="main-wrapper">
+
+    <!-- CONTROL PANEL: Presets & Match Mode -->
+    <section class="glass-panel control-panel">
+      <div class="control-panel-row">
+        
+        <!-- Quick Preset Filter Buttons -->
+        <div>
+          <div class="preset-group-title">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"></path>
+            </svg>
+            Preset Pilihan Cepat:
+          </div>
+          <div class="preset-chip-list">
+            <button class="chip-btn preset-btn active" data-preset="all">
+              Semua Tim (<span id="allCountBadge">182</span>)
+            </button>
+            <button class="chip-btn preset-btn" data-preset="clubs">
+              Klub Saja (<span id="clubsCountBadge">123</span>)
+            </button>
+            <button class="chip-btn preset-btn" data-preset="nations">
+              Negara Saja (<span id="nationsCountBadge">59</span>)
+            </button>
+            <button class="chip-btn preset-btn" data-preset="top5">
+              Top 5 Eropa (<span id="top5CountBadge">82</span>)
+            </button>
+            <button id="btnCustomFilter" class="chip-btn btn-filter-toggle">
+              <span>Filter Kustom</span>
+              <svg id="filterChevron" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transition: transform 0.2s;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mode Duel & Pool Indicator -->
+        <div class="status-controls">
+          <!-- Mode Switch -->
+          <div class="mode-pill">
+            <div>
+              <span class="mode-info-label">Mode Duel:</span>
+              <span id="modeDisplay" class="mode-info-value">Bebas / Campur</span>
+            </div>
+            <button id="btnToggleMode" class="btn-small-toggle" title="Ganti Mode Duel">
+              Ganti Mode
+            </button>
+          </div>
+
+          <!-- Active Pool Count -->
+          <div class="pool-status-pill">
+            <span class="pulse-dot"></span>
+            <span style="color: var(--text-slate-400);">Pool Aktif:</span>
+            <span id="activePoolCount" style="color: var(--neon-green); font-family: var(--font-display); font-weight: 800;">
+              182 Tim
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Collapsible Custom Category Drawer -->
+      <div id="poolDrawer" class="category-drawer hidden">
+        <div class="category-drawer-header">
+          <span>Centang liga & kategori yang ingin dimasukkan ke dalam kocokan undian:</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btnSelectAllCats" style="background: none; border: none; color: var(--neon-cyan); font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+              Pilih Semua
+            </button>
+            <span style="color: var(--text-slate-500);">|</span>
+            <button id="btnClearAllCats" style="background: none; border: none; color: #ff6b7e; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+              Kosongkan
+            </button>
+          </div>
+        </div>
+
+        <!-- Grid of 14 Categories generated by JS -->
+        <div id="categoryGrid" class="category-grid"></div>
+      </div>
+    </section>
+
+    <!-- ================= STADIUM VERSUS ARENA ================= -->
+    <section class="versus-arena-stage glass-panel">
+      <!-- Top neon beam -->
+      <div class="stadium-beam-line"></div>
+
+      <div class="duel-grid">
+        
+        <!-- TEAM 1 CARD: HOME / STIK 1 -->
+        <div id="cardTeam1" class="team-card home-card">
+          <div class="card-top-bar">
+            <span class="side-badge home">
+              <span class="side-badge-dot"></span> HOME / STIK 1
+            </span>
+            <span id="t1CategoryBadge" class="category-tag">Siap Diundi</span>
+          </div>
+
+          <!-- Emblem / Logo Box -->
+          <div id="t1EmblemWrapper" class="emblem-wrapper">
+            <img id="t1Logo" class="emblem-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Logo Tim 1" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';">
+            <span id="t1TextFallback" class="emblem-text-fallback">?</span>
+          </div>
+
+          <!-- Team Name -->
+          <div class="team-name-box">
+            <h2 id="t1Name" class="team-title">Tim Kandang</h2>
+          </div>
+
+          <!-- Subtext Tagline -->
+          <p id="t1Subtext" class="team-subtext">Tekan Roll Match untuk mengundi</p>
+        </div>
+
+        <!-- CENTER VERSUS DIVIDER -->
+        <div class="versus-divider">
+          <div class="vs-circle">
+            <span class="vs-text">VS</span>
+          </div>
+          <div class="vs-axis-line"></div>
+        </div>
+
+        <!-- TEAM 2 CARD: AWAY / STIK 2 -->
+        <div id="cardTeam2" class="team-card away-card">
+          <div class="card-top-bar">
+            <span class="side-badge away">
+              <span class="side-badge-dot"></span> AWAY / STIK 2
+            </span>
+            <span id="t2CategoryBadge" class="category-tag">Siap Diundi</span>
+          </div>
+
+          <!-- Emblem / Logo Box -->
+          <div id="t2EmblemWrapper" class="emblem-wrapper">
+            <img id="t2Logo" class="emblem-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Logo Tim 2" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';">
+            <span id="t2TextFallback" class="emblem-text-fallback">?</span>
+          </div>
+
+          <!-- Team Name -->
+          <div class="team-name-box">
+            <h2 id="t2Name" class="team-title">Tim Tandang</h2>
+          </div>
+
+          <!-- Subtext Tagline -->
+          <p id="t2Subtext" class="team-subtext">Tekan Roll Match untuk mengundi</p>
+        </div>
+
+      </div>
+
+      <!-- MAIN ARENA ACTION BUTTONS -->
+      <div class="arena-controls">
+        
+        <!-- Primary Roll Gacha Button -->
+        <button id="btnRollGacha" class="btn-gacha-main">
+          <svg class="gacha-spin-icon spin-slow" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2v2a8 8 0 0 1 8 8h2c0-5.52-4.48-10-10-10zm0 18v-2a8 8 0 0 1-8-8H2c0 5.52 4.48 10 10 10z"/>
+          </svg>
+          <span id="rollBtnLabel">ROLL MATCH (GACHA)</span>
+        </button>
+
+        <!-- Secondary Utility Buttons (Swap & Copy) -->
+        <div class="secondary-actions">
+          <button id="btnCopyMatch" class="btn-secondary" title="Salin Jadwal Matchup">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+            <span>Salin Match</span>
+          </button>
+          
+          <button id="btnSwapHomeAway" class="btn-secondary" title="Tukar Tim Kandang & Tandang">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+            </svg>
+            <span>Tukar Posisi</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= INFO & RULES CARDS ================= -->
+    <section class="info-cards-grid">
+      <div class="glass-panel info-card">
+        <div class="info-icon-box" style="color: var(--neon-green);">🎯</div>
+        <div>
+          <h4>100% Bebas Bentrok</h4>
+          <p>Algoritma memastikan Tim 1 dan Tim 2 tidak akan pernah sama dalam satu kali putaran.</p>
+        </div>
+      </div>
+
+      <div class="glass-panel info-card">
+        <div class="info-icon-box" style="color: var(--neon-cyan);">⚔️</div>
+        <div>
+          <h4>Mode Derby & Liga Sama</h4>
+          <p>Ingin duel satu liga? Aktifkan mode <em>Satu Kategori Sama</em> pada panel pengaturan atas.</p>
+        </div>
+      </div>
+
+      <div class="glass-panel info-card">
+        <div class="info-icon-box" style="color: var(--electric-gold);">🎮</div>
+        <div>
+          <h4>Penentu Stik 1 & Jersey</h4>
+          <p>Gunakan fitur <strong>Lempar Koin</strong> untuk menentukan siapa pemegang Stik 1 / Tuan Rumah sebelum kick-off.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= COIN TOSS MODAL ================= -->
+  <div id="coinModal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <button id="btnCloseCoin" class="modal-close-btn" title="Tutup">✕</button>
+      
+      <h3 class="text-gradient-gold" style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; text-transform: uppercase;">
+        PENENTU STIK 1 (COIN FLIP)
+      </h3>
+      <p style="font-size: 0.78rem; color: var(--text-slate-400); margin-top: 0.2rem;">
+        Siapa yang berhak memilih stik utama atau warna jersey?
+      </p>
+
+      <!-- 3D Coin Visual -->
+      <div class="coin-wrapper">
+        <div id="coin3D" class="coin-3d">
+          🪙
+        </div>
+      </div>
+
+      <!-- Result Banner -->
+      <div id="coinResultBanner" class="coin-result-banner">
+        Siap Melempar...
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button id="btnFlipCoin" class="btn-gacha-main" style="flex: 1; padding: 0.75rem 1rem; font-size: 1.1rem; box-shadow: none;">
+          Lempar Koin
+        </button>
+        <button onclick="document.getElementById('coinModal').classList.add('hidden')" class="btn-secondary" style="flex: 0 0 85px;">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MATCH HISTORY DRAWER ================= -->
+  <aside id="historyDrawer" class="history-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Riwayat Match</span>
+      </div>
+      <button id="btnCloseHistory" class="modal-close-btn" style="position: static;" title="Tutup Riwayat">✕</button>
+    </div>
+
+    <!-- History List Items -->
+    <div id="historyList" class="drawer-body"></div>
+
+    <!-- Drawer Footer -->
+    <div class="drawer-footer">
+      <button id="btnClearHistory" class="btn-clear-history">
+        Hapus Seluruh Riwayat
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= TOAST NOTIFICATION ================= -->
+  <div id="toastNotification" class="toast-container">
+    <span>⚽</span>
+    <span id="toastMsg">Pesan Notifikasi</span>
+  </div>
+
+  <!-- ================= CELEBRATION CONFETTI CANVAS ================= -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- ================= MODULAR JAVASCRIPT IMPORTS ================= -->
+  <!-- 1. Database lengkap 182 tim & negara -->
+  <script src="js/teams.js"></script>
+  <!-- 2. Modul Audio Web Audio API Murni -->
+  <script src="js/audio.js"></script>
+  <!-- 3. Logika Interaksi Utama & State Management -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
