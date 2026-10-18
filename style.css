@@ -6,21 +6,39 @@
 
 /* --- 1. CSS VARIABLES & DESIGN TOKENS --- */
 :root {
-  --bg-pitch: #030816;
-  --bg-stadium: #091326;
-  --bg-card: rgba(14, 27, 49, 0.82);
-  --bg-card-solid: #0e1c33;
-  --border-card: rgba(43, 73, 118, 0.45);
-  --border-card-hover: rgba(0, 210, 255, 0.5);
+  /* Stadium Dark Theme Backgrounds */
+  --bg-pitch: #0a0e17;
+  --bg-stadium: #0c1222;
+  --bg-card: rgba(12, 18, 34, 0.85);
+  --bg-card-solid: #0c1222;
+  --bg-card-hover: rgba(18, 28, 52, 0.9);
 
-  --neon-green: #00ff88;
-  --neon-green-glow: rgba(0, 255, 136, 0.35);
-  --neon-cyan: #00d2ff;
-  --neon-cyan-glow: rgba(0, 210, 255, 0.35);
-  --electric-gold: #ffb703;
-  --electric-gold-glow: rgba(255, 183, 3, 0.4);
-  --vibrant-red: #ef233c;
+  /* "Sunny Day" Palette Tokens */
+  /* Aksen Utama: Amber Kuning (#FFBF00) */
+  --amber-yellow: #FFBF00;
+  --amber-yellow-glow: rgba(255, 191, 0, 0.4);
+  --amber-yellow-subtle: rgba(255, 191, 0, 0.15);
 
+  /* Warna Sekunder / Border & Hover: Olive Gold (#807040) */
+  --olive-gold: #807040;
+  --olive-gold-glow: rgba(128, 112, 64, 0.4);
+  --olive-gold-subtle: rgba(128, 112, 64, 0.18);
+
+  /* Aksen Away & Tombol Riwayat: Sky Blue (#007EFF) */
+  --sky-blue: #007EFF;
+  --sky-blue-glow: rgba(0, 126, 255, 0.4);
+  --sky-blue-subtle: rgba(0, 126, 255, 0.15);
+
+  /* Aksen Kontras & Header Aksen: Deep Blue (#2400FF) */
+  --deep-blue: #2400FF;
+  --deep-blue-glow: rgba(36, 0, 255, 0.4);
+  --deep-blue-subtle: rgba(36, 0, 255, 0.15);
+
+  /* Semantic Borders */
+  --border-card: rgba(128, 112, 64, 0.35);
+  --border-card-hover: #807040;
+
+  /* Typography Colors */
   --text-white: #f8fafc;
   --text-slate-100: #f1f5f9;
   --text-slate-300: #cbd5e1;
@@ -36,10 +54,11 @@
   --radius-xl: 24px;
   --radius-full: 9999px;
 
-  --shadow-glow-cyan: 0 0 25px rgba(0, 210, 255, 0.35);
-  --shadow-glow-green: 0 0 25px rgba(0, 255, 136, 0.35);
-  --shadow-glow-gold: 0 0 30px rgba(255, 183, 3, 0.4);
-  --shadow-elevated: 0 10px 30px -5px rgba(0, 0, 0, 0.7);
+  --shadow-glow-amber: 0 0 25px rgba(255, 191, 0, 0.35);
+  --shadow-glow-blue: 0 0 25px rgba(0, 126, 255, 0.35);
+  --shadow-glow-deep: 0 0 25px rgba(36, 0, 255, 0.35);
+  --shadow-glow-gold: 0 0 30px rgba(128, 112, 64, 0.4);
+  --shadow-elevated: 0 10px 30px -5px rgba(0, 0, 0, 0.75);
 
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -70,10 +89,10 @@ body {
   flex-direction: column;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 10% 10%, rgba(0, 210, 255, 0.08) 0%, transparent 45%),
-    radial-gradient(circle at 90% 10%, rgba(0, 255, 136, 0.08) 0%, transparent 45%),
-    radial-gradient(circle at 50% 90%, rgba(255, 183, 3, 0.06) 0%, transparent 60%),
-    linear-gradient(to bottom, #030816 0%, #061124 50%, #030816 100%);
+    radial-gradient(circle at 10% 10%, rgba(36, 0, 255, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 90% 10%, rgba(255, 191, 0, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(0, 126, 255, 0.1) 0%, transparent 60%),
+    linear-gradient(to bottom, #0a0e17 0%, #0c1222 50%, #0a0e17 100%);
   background-attachment: fixed;
   padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
@@ -87,11 +106,11 @@ body {
   background: var(--bg-pitch);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1b2f4d;
+  background: #17243c;
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-cyan);
+  background: var(--sky-blue);
 }
 
 /* --- 3. REUSABLE UTILITIES & GLASSMORPHISM --- */
@@ -103,14 +122,20 @@ body {
   box-shadow: var(--shadow-elevated);
 }
 
+.text-gradient-sunny {
+  background: linear-gradient(135deg, var(--amber-yellow), #ffe066);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .text-gradient-cyan {
-  background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+  background: linear-gradient(135deg, var(--sky-blue), var(--amber-yellow));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-gold {
-  background: linear-gradient(135deg, #ffe066, var(--electric-gold), #f59e0b);
+  background: linear-gradient(135deg, #ffe066, var(--amber-yellow), #f59e0b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -121,10 +146,10 @@ body {
   top: 0;
   z-index: 40;
   padding: 0.75rem 1rem;
-  background: rgba(6, 17, 36, 0.85);
+  background: rgba(10, 14, 23, 0.9);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(43, 73, 118, 0.5);
+  border-bottom: 1px solid rgba(128, 112, 64, 0.4);
 }
 
 .header-container {
@@ -146,12 +171,12 @@ body {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+  background: linear-gradient(135deg, var(--deep-blue), var(--sky-blue));
   padding: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px var(--neon-cyan-glow);
+  box-shadow: 0 0 16px var(--deep-blue-glow);
 }
 
 .brand-icon-inner {
@@ -162,7 +187,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--neon-green);
+  color: var(--amber-yellow);
 }
 
 .brand-title {
@@ -183,9 +208,9 @@ body {
   letter-spacing: 0.08em;
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
-  background: rgba(0, 210, 255, 0.15);
-  color: var(--neon-cyan);
-  border: 1px solid rgba(0, 210, 255, 0.3);
+  background: var(--deep-blue-subtle);
+  color: var(--sky-blue);
+  border: 1px solid rgba(0, 126, 255, 0.35);
 }
 
 .brand-tagline {
@@ -202,7 +227,7 @@ body {
 .btn-icon-text {
   padding: 0.5rem 0.85rem;
   border-radius: var(--radius-md);
-  background: rgba(18, 34, 60, 0.7);
+  background: rgba(12, 18, 34, 0.7);
   border: 1px solid var(--border-card);
   color: var(--text-slate-300);
   font-size: 0.8rem;
@@ -216,28 +241,42 @@ body {
 }
 
 .btn-icon-text:hover {
-  background: rgba(30, 55, 95, 0.85);
+  background: var(--olive-gold-subtle);
   color: var(--text-white);
-  border-color: rgba(0, 210, 255, 0.4);
+  border-color: var(--olive-gold);
 }
 
 .btn-icon-text:active {
   transform: scale(0.96);
 }
 
+/* Tombol Riwayat: Aksen Sky Blue (#007EFF) */
+#btnOpenHistory {
+  background: rgba(0, 126, 255, 0.12);
+  border-color: rgba(0, 126, 255, 0.45);
+  color: var(--sky-blue);
+}
+
+#btnOpenHistory:hover {
+  background: rgba(0, 126, 255, 0.25);
+  border-color: var(--sky-blue);
+  color: #fff;
+  box-shadow: 0 0 15px var(--sky-blue-glow);
+}
+
 .badge-count {
-  background: rgba(0, 210, 255, 0.25);
-  color: var(--neon-cyan);
+  background: var(--sky-blue);
+  color: #0a0e17;
   font-size: 0.7rem;
-  padding: 0.1rem 0.4rem;
+  padding: 0.1rem 0.45rem;
   border-radius: var(--radius-full);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 /* --- 5. MAIN CONTAINER & SECTIONS --- */
 .main-wrapper {
   flex: 1;
-  max-width: 1200px;
+  max-width: 1380px;
   width: 100%;
   margin: 0 auto;
   padding: 1rem 1rem 2.5rem;
@@ -282,7 +321,7 @@ body {
   font-size: 0.78rem;
   font-weight: 600;
   border: 1px solid var(--border-card);
-  background: rgba(14, 27, 49, 0.6);
+  background: rgba(12, 18, 34, 0.7);
   color: var(--text-slate-300);
   cursor: pointer;
   transition: var(--transition-fast);
@@ -292,25 +331,27 @@ body {
 }
 
 .chip-btn:hover {
-  border-color: var(--text-slate-400);
+  border-color: var(--olive-gold);
   color: var(--text-white);
+  background: var(--olive-gold-subtle);
 }
 
 .chip-btn.active {
-  background: rgba(0, 255, 136, 0.15);
-  border-color: rgba(0, 255, 136, 0.6);
-  color: var(--neon-green);
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+  background: rgba(255, 191, 0, 0.16);
+  border-color: var(--amber-yellow);
+  color: var(--amber-yellow);
+  box-shadow: 0 0 12px rgba(255, 191, 0, 0.25);
 }
 
 .chip-btn.btn-filter-toggle {
-  background: rgba(0, 210, 255, 0.1);
-  border-color: rgba(0, 210, 255, 0.4);
-  color: var(--neon-cyan);
+  background: rgba(0, 126, 255, 0.12);
+  border-color: rgba(0, 126, 255, 0.4);
+  color: var(--sky-blue);
 }
 
 .chip-btn.btn-filter-toggle:hover {
-  background: rgba(0, 210, 255, 0.2);
+  background: rgba(0, 126, 255, 0.22);
+  border-color: var(--sky-blue);
 }
 
 .status-controls {
@@ -320,14 +361,75 @@ body {
   gap: 0.75rem;
   justify-content: space-between;
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(43, 73, 118, 0.35);
+  border-top: 1px solid rgba(128, 112, 64, 0.3);
+}
+
+/* Format Switcher (1 Tim vs 2 Tim per Kubu) */
+.format-pill {
+  display: flex;
+  align-items: center;
+  background: rgba(10, 14, 23, 0.85);
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-card);
+  gap: 0.5rem;
+}
+
+.format-switch-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(4, 8, 18, 0.7);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(128, 112, 64, 0.3);
+}
+
+.btn-format-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-slate-400);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  user-select: none;
+}
+
+.btn-format-toggle:hover {
+  color: var(--text-white);
+}
+
+.btn-format-toggle.active {
+  background: linear-gradient(135deg, var(--amber-yellow), #e6ac00);
+  color: #0a0e17;
+  box-shadow: 0 0 12px var(--amber-yellow-glow);
+}
+
+.format-badge-sub {
+  font-size: 0.65rem;
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 700;
+}
+
+.btn-format-toggle.active .format-badge-sub {
+  background: rgba(10, 14, 23, 0.2);
+  color: #0a0e17;
 }
 
 .mode-pill {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(4, 10, 22, 0.7);
+  background: rgba(10, 14, 23, 0.85);
   padding: 0.4rem 0.75rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-card);
@@ -343,17 +445,17 @@ body {
 .mode-info-value {
   font-size: 0.82rem;
   font-weight: 800;
-  color: var(--neon-cyan);
+  color: var(--sky-blue);
 }
 
 .mode-info-value.same-cat {
-  color: var(--electric-gold);
+  color: var(--amber-yellow);
 }
 
 .btn-small-toggle {
-  background: #172a48;
+  background: rgba(128, 112, 64, 0.25);
   color: var(--text-slate-200);
-  border: none;
+  border: 1px solid var(--olive-gold);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.35rem 0.65rem;
@@ -363,7 +465,7 @@ body {
 }
 
 .btn-small-toggle:hover {
-  background: #234273;
+  background: var(--olive-gold);
   color: var(--text-white);
 }
 
@@ -372,7 +474,7 @@ body {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8rem;
-  background: rgba(4, 10, 22, 0.7);
+  background: rgba(10, 14, 23, 0.85);
   padding: 0.45rem 0.85rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-card);
@@ -381,9 +483,9 @@ body {
 .pulse-dot {
   width: 8px;
   height: 8px;
-  background: var(--neon-green);
+  background: var(--amber-yellow);
   border-radius: var(--radius-full);
-  box-shadow: 0 0 8px var(--neon-green);
+  box-shadow: 0 0 8px var(--amber-yellow);
   animation: pulseLight 1.8s infinite;
 }
 
@@ -426,7 +528,7 @@ body {
   padding: 0.55rem 0.75rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-card);
-  background: rgba(5, 12, 26, 0.7);
+  background: rgba(10, 14, 23, 0.8);
   font-size: 0.78rem;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -434,14 +536,15 @@ body {
 }
 
 .category-chip-label:hover {
-  border-color: rgba(0, 210, 255, 0.4);
+  border-color: var(--olive-gold);
+  background: var(--olive-gold-subtle);
 }
 
 .category-chip-label.active {
-  background: rgba(14, 27, 49, 0.95);
-  border-color: rgba(0, 210, 255, 0.6);
+  background: rgba(14, 22, 40, 0.95);
+  border-color: var(--olive-gold);
   color: var(--text-white);
-  box-shadow: 0 0 10px rgba(0, 210, 255, 0.15);
+  box-shadow: 0 0 10px rgba(128, 112, 64, 0.25);
 }
 
 .cat-chip-left {
@@ -452,7 +555,7 @@ body {
 }
 
 .cat-chip-left input[type="checkbox"] {
-  accent-color: var(--neon-cyan);
+  accent-color: var(--sky-blue);
   width: 15px;
   height: 15px;
 }
@@ -481,7 +584,7 @@ body {
   padding: 1.5rem 1rem 2rem;
   border: 2px solid var(--border-card);
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(14, 27, 49, 0.85) 0%, rgba(6, 14, 29, 0.95) 100%);
+  background: linear-gradient(180deg, rgba(12, 18, 34, 0.92) 0%, rgba(7, 12, 24, 0.98) 100%);
 }
 
 .stadium-beam-line {
@@ -490,24 +593,71 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan), var(--electric-gold));
-  box-shadow: 0 0 15px var(--neon-cyan);
+  background: linear-gradient(90deg, var(--amber-yellow), var(--deep-blue), var(--sky-blue));
+  box-shadow: 0 0 16px var(--amber-yellow-glow);
 }
 
 /* Grid Duel Cards */
 .duel-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
-  align-items: center;
+  gap: 1.5rem;
+  align-items: stretch;
 }
 
-/* Matchup Cards (Home & Away) */
+/* Kubu Container Sections */
+.kubu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.kubu-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.85rem;
+  background: rgba(10, 14, 23, 0.75);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-card);
+}
+
+.kubu-meta-tag {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--text-slate-400);
+  text-transform: uppercase;
+}
+
+.kubu-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* 1v1 format: sembunyikan kartu ke-2 dan tag slot */
+.duel-grid.format-1v1 .second-card {
+  display: none !important;
+}
+
+.duel-grid.format-1v1 .card-slot-header {
+  display: none !important;
+}
+
+.duel-grid.format-1v1 .kubu-meta-tag {
+  display: none !important;
+}
+
+/* Matchup Cards */
 .team-card {
   position: relative;
-  background: linear-gradient(180deg, rgba(18, 35, 63, 0.9) 0%, rgba(6, 14, 28, 0.95) 100%);
+  background: linear-gradient(180deg, rgba(14, 22, 40, 0.94) 0%, rgba(7, 12, 24, 0.98) 100%);
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1rem;
+  padding: 1.25rem 1rem 1.4rem;
   border: 2px solid var(--border-card);
   display: flex;
   flex-direction: column;
@@ -515,51 +665,81 @@ body {
   text-align: center;
   box-shadow: var(--shadow-elevated);
   transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+  width: 100%;
 }
 
 .team-card.home-card {
-  border-top-color: var(--neon-green);
+  border-top-color: var(--amber-yellow);
 }
 
 .team-card.away-card {
-  border-top-color: var(--neon-cyan);
+  border-top-color: var(--sky-blue);
 }
 
-.team-card.home-stik-winner {
-  border-color: var(--electric-gold) !important;
-  box-shadow: 0 0 30px var(--electric-gold-glow) !important;
+/* Efek Pemenang Lempar Koin per Kubu */
+.kubu-section.home-stik-winner .team-card {
+  border-color: var(--amber-yellow) !important;
+  box-shadow: 0 0 32px var(--amber-yellow-glow) !important;
 }
 
-.card-top-bar {
+.kubu-section.away-stik-winner .team-card {
+  border-color: var(--sky-blue) !important;
+  box-shadow: 0 0 32px var(--sky-blue-glow) !important;
+}
+
+.card-slot-header {
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
+  justify-content: flex-start;
+  margin-bottom: 0.35rem;
+}
+
+.slot-badge {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.slot-badge.amber {
+  background: rgba(255, 191, 0, 0.15);
+  color: var(--amber-yellow);
+  border: 1px solid rgba(255, 191, 0, 0.45);
+}
+
+.slot-badge.blue {
+  background: rgba(0, 126, 255, 0.15);
+  color: var(--sky-blue);
+  border: 1px solid rgba(0, 126, 255, 0.45);
 }
 
 .side-badge {
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  padding: 0.2rem 0.6rem;
+  padding: 0.22rem 0.7rem;
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .side-badge.home {
-  background: rgba(0, 255, 136, 0.15);
-  color: var(--neon-green);
-  border: 1px solid rgba(0, 255, 136, 0.4);
+  background: rgba(255, 191, 0, 0.15);
+  color: var(--amber-yellow);
+  border: 1px solid rgba(255, 191, 0, 0.5);
+  box-shadow: 0 0 10px rgba(255, 191, 0, 0.2);
 }
 
 .side-badge.away {
-  background: rgba(0, 210, 255, 0.15);
-  color: var(--neon-cyan);
-  border: 1px solid rgba(0, 210, 255, 0.4);
+  background: rgba(0, 126, 255, 0.15);
+  color: var(--sky-blue);
+  border: 1px solid rgba(0, 126, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 126, 255, 0.2);
 }
 
 .side-badge-dot {
@@ -569,65 +749,79 @@ body {
   background: currentColor;
 }
 
-.category-tag {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-slate-400);
-  background: rgba(3, 8, 22, 0.6);
-  padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-card);
-  max-width: 140px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Emblem / Logo Container */
+/* Emblem / Logo Container (Perbesar 200px - 220px desktop, 150px - 160px mobile) */
 .emblem-wrapper {
   position: relative;
-  width: 96px;
-  height: 96px;
-  margin: 0.5rem auto 0.75rem;
-  border-radius: 22px;
-  background: linear-gradient(135deg, #1b2f4d, #081324);
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  width: 155px;
+  height: 155px;
+  min-width: 150px;
+  min-height: 150px;
+  margin: 0.5rem auto 0.85rem;
+  border-radius: 20px;
+  background: radial-gradient(circle at center, rgba(18, 28, 52, 0.95), rgba(7, 12, 24, 0.98));
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.1), 0 8px 20px rgba(0, 0, 0, 0.5);
-  transition: transform var(--transition-bounce), border-color var(--transition-normal);
+  padding: 12px;
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.6);
+  transition: transform var(--transition-bounce), border-color var(--transition-normal), box-shadow var(--transition-normal);
 }
 
+/* Garis Tepi (Border) Bercahaya Home / Kubu A: Amber Kuning (#FFBF00) */
+.home-card .emblem-wrapper,
+#tA1EmblemWrapper,
+#tA2EmblemWrapper {
+  border: 2.5px solid var(--amber-yellow);
+  box-shadow: 0 0 24px rgba(255, 191, 0, 0.45), inset 0 0 15px rgba(255, 191, 0, 0.12);
+}
+
+/* Garis Tepi (Border) Bercahaya Away / Kubu B: Sky Blue (#007EFF) */
+.away-card .emblem-wrapper,
+#tB1EmblemWrapper,
+#tB2EmblemWrapper {
+  border: 2.5px solid var(--sky-blue);
+  box-shadow: 0 0 24px rgba(0, 126, 255, 0.45), inset 0 0 15px rgba(0, 126, 255, 0.12);
+}
+
+/* Logo Image Styling: Object-fit contain, max-height 180px, tajam */
 .emblem-img {
-  width: 72%;
-  height: 72%;
+  width: 100%;
+  height: 100%;
+  max-height: 180px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
-  transition: transform 0.2s ease;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+  transition: transform 0.25s ease;
+}
+
+.emblem-wrapper:hover .emblem-img {
+  transform: scale(1.06);
 }
 
 .emblem-text-fallback {
   font-family: var(--font-display);
-  font-size: 2.2rem;
+  font-size: 3.2rem;
   font-weight: 800;
-  color: var(--neon-cyan);
+  color: var(--amber-yellow);
   display: none;
 }
 
+/* Nama Klub di bawah kotak logo */
 .team-name-box {
-  min-height: 54px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   padding: 0 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 .team-title {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   font-weight: 800;
   letter-spacing: 0.03em;
   color: var(--text-white);
@@ -639,10 +833,29 @@ body {
   overflow: hidden;
 }
 
+/* Label Kategori di bawah Nama Klub */
+.team-category-box {
+  margin-bottom: 0.35rem;
+}
+
+.category-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-slate-300);
+  background: rgba(10, 14, 23, 0.85);
+  padding: 0.22rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-card);
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
 .team-subtext {
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   color: var(--text-slate-400);
-  margin-top: 0.25rem;
   font-weight: 500;
 }
 
@@ -661,8 +874,8 @@ body {
   height: 58px;
   border-radius: var(--radius-full);
   background: var(--bg-pitch);
-  border: 2px solid var(--electric-gold);
-  box-shadow: var(--shadow-glow-gold);
+  border: 2.5px solid var(--olive-gold);
+  box-shadow: 0 0 20px var(--olive-gold-glow);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -674,8 +887,8 @@ body {
   font-family: var(--font-display);
   font-size: 1.4rem;
   font-weight: 900;
-  color: var(--electric-gold);
-  text-shadow: 0 0 10px rgba(255, 183, 3, 0.6);
+  color: var(--amber-yellow);
+  text-shadow: 0 0 10px var(--amber-yellow-glow);
 }
 
 .vs-axis-line {
@@ -713,14 +926,15 @@ body {
   gap: 0.85rem;
 }
 
+/* Tombol Roll Gacha: Amber Kuning (#FFBF00) dengan efek glow halus */
 .btn-gacha-main {
   width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 1.05rem 1.75rem;
   border-radius: var(--radius-lg);
   border: none;
-  background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan) 50%, var(--electric-gold));
+  background: linear-gradient(135deg, #FFBF00 0%, #FFD043 50%, #FFBF00 100%);
   background-size: 200% auto;
-  color: #030816;
+  color: #0a0e17;
   font-family: var(--font-display);
   font-size: 1.35rem;
   font-weight: 900;
@@ -730,15 +944,16 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  box-shadow: 0 0 25px rgba(0, 255, 136, 0.45);
+  gap: 0.65rem;
+  box-shadow: 0 0 25px rgba(255, 191, 0, 0.45), 0 4px 15px rgba(0, 0, 0, 0.5);
   transition: transform var(--transition-fast), box-shadow var(--transition-normal), background-position 0.5s ease;
   user-select: none;
 }
 
 .btn-gacha-main:hover {
   background-position: right center;
-  box-shadow: 0 0 35px rgba(0, 210, 255, 0.65);
+  box-shadow: 0 0 35px rgba(255, 191, 0, 0.7), 0 6px 20px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
 }
 
 .btn-gacha-main:active {
@@ -776,8 +991,8 @@ body {
   flex: 1;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
-  background: rgba(18, 35, 63, 0.75);
-  border: 1px solid var(--border-card);
+  background: rgba(12, 18, 34, 0.85);
+  border: 1px solid var(--olive-gold);
   color: var(--text-slate-200);
   font-size: 0.82rem;
   font-weight: 600;
@@ -791,57 +1006,22 @@ body {
 }
 
 .btn-secondary:hover {
-  background: rgba(30, 56, 96, 0.9);
+  background: var(--olive-gold-subtle);
   color: var(--text-white);
-  border-color: rgba(0, 210, 255, 0.5);
+  border-color: var(--amber-yellow);
+  box-shadow: 0 0 15px var(--olive-gold-glow);
 }
 
 .btn-secondary:active {
   transform: scale(0.96);
 }
 
-/* --- 10. INFO CARDS FOOTER --- */
-.info-cards-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-}
-
-.info-card {
-  padding: 0.9rem 1rem;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.info-icon-box {
-  font-size: 1.4rem;
-  line-height: 1;
-  padding: 0.4rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: var(--radius-sm);
-}
-
-.info-card h4 {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-white);
-  margin-bottom: 0.15rem;
-}
-
-.info-card p {
-  font-size: 0.75rem;
-  color: var(--text-slate-400);
-  line-height: 1.4;
-}
-
-/* --- 11. COIN TOSS MODAL --- */
+/* --- 10. COIN TOSS MODAL --- */
 .modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(3, 8, 22, 0.82);
+  background: rgba(10, 14, 23, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -860,8 +1040,8 @@ body {
   max-width: 380px;
   border-radius: var(--radius-xl);
   padding: 1.75rem 1.25rem;
-  border: 2px solid rgba(255, 183, 3, 0.5);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 35px var(--electric-gold-glow);
+  border: 2px solid var(--olive-gold);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 35px var(--amber-yellow-glow);
   text-align: center;
   position: relative;
   background: var(--bg-card-solid);
@@ -895,9 +1075,9 @@ body {
   width: 100%;
   height: 100%;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, #d97706, #fbbf24, #fef08a, #d97706);
-  border: 4px solid #fffbeb;
-  box-shadow: 0 0 25px rgba(255, 183, 3, 0.6);
+  background: linear-gradient(135deg, #b38600, #FFBF00, #ffe680, #b38600);
+  border: 4px solid #fff5cc;
+  box-shadow: 0 0 25px rgba(255, 191, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -927,7 +1107,7 @@ body {
   justify-content: center;
 }
 
-/* --- 12. MATCH HISTORY DRAWER --- */
+/* --- 11. MATCH HISTORY DRAWER --- */
 .history-drawer {
   position: fixed;
   top: 0;
@@ -935,7 +1115,7 @@ body {
   right: 0;
   width: 100%;
   max-width: 380px;
-  background: #081224;
+  background: #0a0e17;
   border-left: 1px solid var(--border-card);
   z-index: 50;
   box-shadow: -10px 0 35px rgba(0, 0, 0, 0.8);
@@ -955,7 +1135,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(14, 27, 49, 0.8);
+  background: rgba(12, 18, 34, 0.9);
 }
 
 .drawer-title {
@@ -982,14 +1162,14 @@ body {
 .history-card {
   padding: 0.75rem 0.9rem;
   border-radius: var(--radius-md);
-  background: rgba(14, 27, 49, 0.65);
+  background: rgba(12, 18, 34, 0.75);
   border: 1px solid var(--border-card);
   transition: var(--transition-fast);
 }
 
 .history-card:hover {
-  border-color: rgba(0, 210, 255, 0.5);
-  background: rgba(18, 35, 63, 0.8);
+  border-color: var(--sky-blue);
+  background: rgba(18, 28, 52, 0.85);
 }
 
 .history-card-top {
@@ -1019,7 +1199,7 @@ body {
 
 .history-vs {
   font-size: 0.8rem;
-  color: var(--electric-gold);
+  color: var(--amber-yellow);
 }
 
 .history-card-bottom {
@@ -1028,7 +1208,7 @@ body {
   align-items: center;
   margin-top: 0.4rem;
   padding-top: 0.4rem;
-  border-top: 1px solid rgba(43, 73, 118, 0.3);
+  border-top: 1px solid rgba(128, 112, 64, 0.25);
   font-size: 0.72rem;
   color: var(--text-slate-400);
 }
@@ -1036,7 +1216,7 @@ body {
 .btn-apply-history {
   background: transparent;
   border: none;
-  color: var(--neon-green);
+  color: var(--amber-yellow);
   font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
@@ -1050,7 +1230,7 @@ body {
 .drawer-footer {
   padding: 1rem;
   border-top: 1px solid var(--border-card);
-  background: rgba(3, 8, 22, 0.9);
+  background: rgba(10, 14, 23, 0.95);
 }
 
 .btn-clear-history {
@@ -1070,7 +1250,7 @@ body {
   background: rgba(239, 35, 60, 0.15);
 }
 
-/* --- 13. TOAST NOTIFICATION --- */
+/* --- 12. TOAST NOTIFICATION --- */
 .toast-container {
   position: fixed;
   bottom: 1.5rem;
@@ -1078,11 +1258,11 @@ body {
   z-index: 70;
   padding: 0.75rem 1.15rem;
   border-radius: var(--radius-md);
-  background: var(--neon-cyan);
-  color: #030816;
+  background: var(--amber-yellow);
+  color: #0a0e17;
   font-size: 0.85rem;
-  font-weight: 700;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), var(--shadow-glow-cyan);
+  font-weight: 800;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), var(--shadow-glow-amber);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1098,7 +1278,7 @@ body {
   pointer-events: auto;
 }
 
-/* --- 14. CONFETTI CANVAS --- */
+/* --- 13. CONFETTI CANVAS --- */
 #confettiCanvas {
   position: fixed;
   inset: 0;
@@ -1108,7 +1288,7 @@ body {
   z-index: 55;
 }
 
-/* --- 15. RESPONSIVE BREAKPOINTS (Tablet & Desktop) --- */
+/* --- 14. RESPONSIVE BREAKPOINTS (Tablet & Desktop) --- */
 @media (min-width: 640px) {
   .category-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -1150,9 +1330,40 @@ body {
   .category-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+  /* Kotak Logo Tim di Layar Lebar: 210px (memenuhi min 200px - 220px) */
+  .emblem-wrapper {
+    width: 210px;
+    height: 210px;
+    min-width: 200px;
+    min-height: 200px;
+    border-radius: 26px;
+    padding: 16px;
+  }
+  .emblem-img {
+    max-height: 180px;
+  }
+  .team-title {
+    font-size: 1.55rem;
+  }
+  .team-card {
+    padding: 1.6rem 1.25rem 1.75rem;
+  }
+}
+
+@media (min-width: 992px) {
   .duel-grid {
     grid-template-columns: 1fr auto 1fr;
     gap: 1.5rem;
+    align-items: center;
+  }
+  .duel-grid.format-2v2 .kubu-cards-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .duel-grid.format-1v1 .kubu-cards-grid {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin: 0 auto;
   }
   .versus-divider {
     margin: 0;
@@ -1160,6 +1371,7 @@ body {
   .vs-circle {
     width: 68px;
     height: 68px;
+    border: 3px solid var(--olive-gold);
   }
   .vs-text {
     font-size: 1.65rem;
@@ -1171,22 +1383,18 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 2px;
-    height: 160px;
-    background: linear-gradient(180deg, transparent, rgba(255, 183, 3, 0.4), transparent);
+    height: 260px;
+    background: linear-gradient(180deg, transparent, rgba(255, 191, 0, 0.45), transparent);
     z-index: 0;
   }
-  .team-card {
-    padding: 1.75rem 1.5rem;
-  }
-  .emblem-wrapper {
-    width: 110px;
-    height: 110px;
+}
+
+@media (min-width: 1200px) {
+  .duel-grid {
+    gap: 2rem;
   }
   .team-title {
-    font-size: 1.85rem;
-  }
-  .info-cards-grid {
-    grid-template-columns: repeat(3, 1fr);
+    font-size: 1.65rem;
   }
 }
 

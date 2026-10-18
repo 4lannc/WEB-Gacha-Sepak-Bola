@@ -17,9 +17,10 @@
   const state = {
     selectedCategories: new Set(Object.keys(window.TEAMS_DATABASE || {})),
     matchMode: 'any', // 'any' (Bebas/Campur) | 'same_category' (Satu Kategori Sama)
+    teamsPerSide: 2, // 1 (1 vs 1 / 2 clubs) | 2 (2 vs 2 / 4 clubs)
     isRolling: false,
     currentMatch: null,
-    coinWinnerSlot: null,
+    coinWinnerSide: null, // 'A' | 'B'
     history: []
   };
 
@@ -32,6 +33,15 @@
     DOM.btnToggleMode = document.getElementById('btnToggleMode');
     DOM.modeDisplay = document.getElementById('modeDisplay');
     DOM.activePoolCount = document.getElementById('activePoolCount');
+    DOM.btnFormat1 = document.getElementById('btnFormat1');
+    DOM.btnFormat2 = document.getElementById('btnFormat2');
+    DOM.duelGrid = document.getElementById('duelGrid');
+    DOM.kubuA = document.getElementById('kubuA');
+    DOM.kubuB = document.getElementById('kubuB');
+    DOM.kubuABadgeLabel = document.getElementById('kubuABadgeLabel');
+    DOM.kubuBBadgeLabel = document.getElementById('kubuBBadgeLabel');
+    DOM.kubuAMeta = document.getElementById('kubuAMeta');
+    DOM.kubuBMeta = document.getElementById('kubuBMeta');
     DOM.btnSoundToggle = document.getElementById('btnSoundToggle');
     DOM.soundIcon = document.getElementById('soundIcon');
     DOM.btnSwapHomeAway = document.getElementById('btnSwapHomeAway');
@@ -60,9 +70,11 @@
     DOM.nationsCountBadge = document.getElementById('nationsCountBadge');
     DOM.top5CountBadge = document.getElementById('top5CountBadge');
 
-    // Cards
-    DOM.cardTeam1 = document.getElementById('cardTeam1');
-    DOM.cardTeam2 = document.getElementById('cardTeam2');
+    // Cards 4 Slots
+    DOM.cardTeamA1 = document.getElementById('cardTeamA1');
+    DOM.cardTeamA2 = document.getElementById('cardTeamA2');
+    DOM.cardTeamB1 = document.getElementById('cardTeamB1');
+    DOM.cardTeamB2 = document.getElementById('cardTeamB2');
   }
 
   // --- INITIALIZATION ---
@@ -72,6 +84,7 @@
     calculatePresetCounts();
     renderCategoryGrid();
     updateActivePoolCounter();
+    setTeamsPerSide(2, false); // Default ke 2 vs 2 (4 tim)
     attachEventListeners();
     loadHistoryFromStorage();
   });
@@ -252,6 +265,37 @@
     showToast(muted ? 'Suara dimatikan' : 'Suara diaktifkan');
   }
 
+  // --- FORMAT TIM TOGGLE (1 vs 1 atau 2 vs 2) ---
+  function setTeamsPerSide(count, notify = true) {
+    state.teamsPerSide = count;
+
+    if (DOM.btnFormat1 && DOM.btnFormat2) {
+      if (count === 1) {
+        DOM.btnFormat1.classList.add('active');
+        DOM.btnFormat2.classList.remove('active');
+      } else {
+        DOM.btnFormat1.classList.remove('active');
+        DOM.btnFormat2.classList.add('active');
+      }
+    }
+
+    if (DOM.duelGrid) {
+      DOM.duelGrid.className = count === 1 ? 'duel-grid format-1v1' : 'duel-grid format-2v2';
+    }
+
+    if (DOM.kubuAMeta) DOM.kubuAMeta.textContent = count === 2 ? '2 Pilihan Tim' : '1 Tim Utama';
+    if (DOM.kubuBMeta) DOM.kubuBMeta.textContent = count === 2 ? '2 Pilihan Tim' : '1 Tim Utama';
+
+    if (DOM.kubuABadgeLabel) DOM.kubuABadgeLabel.textContent = count === 2 ? 'KUBU A / STIK 1' : 'HOME / STIK 1';
+    if (DOM.kubuBBadgeLabel) DOM.kubuBBadgeLabel.textContent = count === 2 ? 'KUBU B / STIK 2' : 'AWAY / STIK 2';
+
+    clearStikWinnerVisual();
+
+    if (notify) {
+      showToast(count === 2 ? 'Format 2 vs 2 diaktifkan (4 Club Bertanding)!' : 'Format 1 vs 1 diaktifkan (2 Club Bertanding)!');
+    }
+  }
+
   // --- MODE DUEL TOGGLE ---
   function toggleMatchMode() {
     if (state.matchMode === 'any') {
@@ -267,27 +311,29 @@
     }
   }
 
-  // --- GACHA ROULETTE ENGINE ---
+  // --- GACHA ROULETTE ENGINE (1v1 & 2v2) ---
   function rollGacha() {
     if (state.isRolling) return;
     if (window.matchAudio) window.matchAudio.ensureContext();
+
+    const requiredCount = state.teamsPerSide === 2 ? 4 : 2;
 
     // 1. Kumpulkan pool tim yang eligible
     let pool = [];
 
     if (state.matchMode === 'same_category') {
-      // Ambil kategori-kategori terpilih yang memiliki minimal 2 tim
+      // Ambil kategori-kategori terpilih yang memiliki minimal jumlah tim yang dibutuhkan
       const validCategories = Array.from(state.selectedCategories).filter(catId => {
         const cat = window.TEAMS_DATABASE[catId];
-        return cat && cat.teams.length >= 2;
+        return cat && cat.teams.length >= requiredCount;
       });
 
       if (validCategories.length === 0) {
-        showToast('Pilih kategori yang memiliki minimal 2 tim untuk mode ini!');
+        showToast(`Pilih kategori yang memiliki minimal ${requiredCount} tim untuk format ini!`);
         return;
       }
 
-      // Pilih 1 kategori secara acak untuk kedua tim
+      // Pilih 1 kategori secara acak untuk seluruh tim
       const randomCatId = validCategories[Math.floor(Math.random() * validCategories.length)];
       const chosenCat = window.TEAMS_DATABASE[randomCatId];
 
@@ -314,24 +360,32 @@
       });
     }
 
-    if (pool.length < 2) {
-      showToast('Pool tim terlalu sedikit untuk diundi (minimal 2 tim)!');
+    if (pool.length < requiredCount) {
+      showToast(`Pool tim terlalu sedikit untuk diundi (minimal ${requiredCount} tim unik)!`);
       return;
     }
 
     // 2. Memulai animasi putaran roulette
     state.isRolling = true;
-    state.coinWinnerSlot = null; // reset pemenang lempar koin sebelumnya
+    state.coinWinnerSide = null; // reset pemenang lempar koin sebelumnya
     clearStikWinnerVisual();
 
     DOM.btnRollGacha.classList.add('loading');
     DOM.btnRollGacha.disabled = true;
     DOM.rollBtnLabel.textContent = 'MENGACAK ARENA...';
 
-    DOM.cardTeam1.classList.add('card-rolling');
-    DOM.cardTeam2.classList.add('card-rolling');
-    DOM.cardTeam1.classList.remove('card-revealed');
-    DOM.cardTeam2.classList.remove('card-revealed');
+    // Animasi putaran pada kartu-kartu yang aktif
+    const activeCards = [DOM.cardTeamA1, DOM.cardTeamB1];
+    if (state.teamsPerSide === 2) {
+      activeCards.push(DOM.cardTeamA2, DOM.cardTeamB2);
+    }
+
+    activeCards.forEach(card => {
+      if (card) {
+        card.classList.add('card-rolling');
+        card.classList.remove('card-revealed');
+      }
+    });
 
     let stepCount = 0;
     const totalSteps = 26; // Total lompatan acak
@@ -340,20 +394,29 @@
     function shuffleStep() {
       stepCount++;
 
-      // Ambil 2 tim acak untuk preview putaran
-      const idx1 = Math.floor(Math.random() * pool.length);
-      let idx2 = Math.floor(Math.random() * pool.length);
-      while (idx2 === idx1) {
-        idx2 = Math.floor(Math.random() * pool.length);
+      // Ambil sejumlah tim acak tanpa duplikasi untuk preview putaran
+      const previewPicks = [];
+      while (previewPicks.length < requiredCount) {
+        const rIdx = Math.floor(Math.random() * pool.length);
+        if (!previewPicks.includes(rIdx)) {
+          previewPicks.push(rIdx);
+        }
       }
 
-      renderTeamCard(1, pool[idx1], true);
-      renderTeamCard(2, pool[idx2], true);
+      renderTeamCard('A1', pool[previewPicks[0]], true);
+
+      if (state.teamsPerSide === 2) {
+        renderTeamCard('A2', pool[previewPicks[1]], true);
+        renderTeamCard('B1', pool[previewPicks[2]], true);
+        renderTeamCard('B2', pool[previewPicks[3]], true);
+      } else {
+        renderTeamCard('B1', pool[previewPicks[1]], true);
+      }
 
       if (window.matchAudio) window.matchAudio.playTick();
 
       if (stepCount < totalSteps) {
-        // Kurva deselerasi realistis (melambat di 8 putaran terakhir)
+        // Kurva deselerasi realistis (melambat di putaran terakhir)
         if (stepCount > totalSteps - 10) {
           currentDelay += 28;
         } else if (stepCount > totalSteps - 4) {
@@ -369,46 +432,72 @@
     shuffleStep();
   }
 
-  // --- KUNCI HASIL & ANTI-BENTROK ---
+  // --- KUNCI HASIL & ANTI-BENTROK 100% ---
   function finalizeMatch(pool) {
-    let pick1 = Math.floor(Math.random() * pool.length);
-    let pick2 = Math.floor(Math.random() * pool.length);
+    const requiredCount = state.teamsPerSide === 2 ? 4 : 2;
+    const picks = [];
+    const usedNames = new Set();
 
-    // Algoritma ketat Anti-Bentrok: Nama dan ID tidak boleh sama
+    // Algoritma ketat Anti-Bentrok: Seluruh slot tim wajib unik (tidak boleh ada nama yang sama)
     let safetyCounter = 0;
-    while (
-      (pick2 === pick1 || pool[pick1].name.trim().toLowerCase() === pool[pick2].name.trim().toLowerCase()) &&
-      safetyCounter < 500
-    ) {
-      pick2 = Math.floor(Math.random() * pool.length);
+    while (picks.length < requiredCount && safetyCounter < 1500) {
       safetyCounter++;
-    }
+      const randIdx = Math.floor(Math.random() * pool.length);
+      const team = pool[randIdx];
+      const cleanName = team.name.trim().toLowerCase();
 
-    const team1 = pool[pick1];
-    const team2 = pool[pick2];
+      if (!picks.includes(randIdx) && !usedNames.has(cleanName)) {
+        picks.push(randIdx);
+        usedNames.add(cleanName);
+      }
+    }
 
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
     const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 
+    let homeTeams = [];
+    let awayTeams = [];
+
+    if (state.teamsPerSide === 2) {
+      homeTeams = [pool[picks[0]], pool[picks[1]]];
+      awayTeams = [pool[picks[2]], pool[picks[3]]];
+    } else {
+      homeTeams = [pool[picks[0]]];
+      awayTeams = [pool[picks[1]]];
+    }
+
     state.currentMatch = {
-      home: team1,
-      away: team2,
+      teamsPerSide: state.teamsPerSide,
+      home: homeTeams,
+      away: awayTeams,
       mode: state.matchMode === 'same_category' ? 'Satu Kategori' : 'Bebas / Campur',
       time: timeStr,
       date: dateStr,
       timestamp: Date.now()
     };
 
-    // Bersihkan kelas putaran
-    DOM.cardTeam1.classList.remove('card-rolling');
-    DOM.cardTeam2.classList.remove('card-rolling');
-    DOM.cardTeam1.classList.add('card-revealed');
-    DOM.cardTeam2.classList.add('card-revealed');
+    // Bersihkan kelas putaran & tambahkan efek revealed
+    const activeCards = [DOM.cardTeamA1, DOM.cardTeamB1];
+    if (state.teamsPerSide === 2) {
+      activeCards.push(DOM.cardTeamA2, DOM.cardTeamB2);
+    }
 
-    // Tampilkan data lengkap
-    renderTeamCard(1, team1, false);
-    renderTeamCard(2, team2, false);
+    activeCards.forEach(card => {
+      if (card) {
+        card.classList.remove('card-rolling');
+        card.classList.add('card-revealed');
+      }
+    });
+
+    // Tampilkan data lengkap ke kartu
+    renderTeamCard('A1', homeTeams[0], false);
+    renderTeamCard('B1', awayTeams[0], false);
+
+    if (state.teamsPerSide === 2) {
+      renderTeamCard('A2', homeTeams[1], false);
+      renderTeamCard('B2', awayTeams[1], false);
+    }
 
     // Audio kemenangan & efek kembang api
     if (window.matchAudio) {
@@ -429,27 +518,27 @@
   }
 
   // --- RENDER TEAM CARD KE LAYAR ---
-  function renderTeamCard(slot, team, isShuffling) {
-    const card = slot === 1 ? DOM.cardTeam1 : DOM.cardTeam2;
-    if (!card) return;
+  function renderTeamCard(slotKey, team, isShuffling) {
+    if (!team) return;
 
-    const nameEl = document.getElementById(`t${slot}Name`);
-    const catBadge = document.getElementById(`t${slot}CategoryBadge`);
-    const emblemWrapper = document.getElementById(`t${slot}EmblemWrapper`);
-    const imgLogo = document.getElementById(`t${slot}Logo`);
-    const textFallback = document.getElementById(`t${slot}TextFallback`);
-    const subtext = document.getElementById(`t${slot}Subtext`);
+    const nameEl = document.getElementById(`t${slotKey}Name`);
+    const catBadge = document.getElementById(`t${slotKey}CategoryBadge`);
+    const emblemWrapper = document.getElementById(`t${slotKey}EmblemWrapper`);
+    const imgLogo = document.getElementById(`t${slotKey}Logo`);
+    const textFallback = document.getElementById(`t${slotKey}TextFallback`);
+    const subtext = document.getElementById(`t${slotKey}Subtext`);
 
     if (nameEl) nameEl.textContent = team.name;
     if (catBadge) catBadge.textContent = team.categoryName || 'Sepak Bola';
 
-    const color1 = (team.colors && team.colors[0]) ? team.colors[0] : (slot === 1 ? '#00ff88' : '#00d2ff');
-    const color2 = (team.colors && team.colors[1]) ? team.colors[1] : '#07152b';
+    const isKubuA = slotKey.startsWith('A');
+    const sideColor = isKubuA ? '#FFBF00' : '#007EFF';
+    const sideGlow = isKubuA ? 'rgba(255, 191, 0, 0.45)' : 'rgba(0, 126, 255, 0.45)';
 
-    // Update styling background emblem dinamis sesuai warna klub
+    // Update styling border emblem sesuai sisi tim (Amber Kuning untuk Kubu A, Sky Blue untuk Kubu B)
     if (emblemWrapper) {
-      emblemWrapper.style.borderColor = color1;
-      emblemWrapper.style.boxShadow = `0 4px 20px ${color1}44`;
+      emblemWrapper.style.borderColor = sideColor;
+      emblemWrapper.style.boxShadow = `0 0 24px ${sideGlow}, inset 0 0 15px rgba(255, 255, 255, 0.05)`;
     }
 
     // Set logo gambar
@@ -472,7 +561,7 @@
 
     if (textFallback) {
       textFallback.textContent = team.short || team.name.substring(0, 3).toUpperCase();
-      textFallback.style.color = color1;
+      textFallback.style.color = sideColor;
     }
 
     if (!isShuffling && subtext) {
@@ -496,26 +585,56 @@
     // Bersihkan penanda stik jika ada
     clearStikWinnerVisual();
 
-    renderTeamCard(1, state.currentMatch.home, false);
-    renderTeamCard(2, state.currentMatch.away, false);
+    const homeArr = Array.isArray(state.currentMatch.home) ? state.currentMatch.home : [state.currentMatch.home];
+    const awayArr = Array.isArray(state.currentMatch.away) ? state.currentMatch.away : [state.currentMatch.away];
 
-    showToast('Posisi Home dan Away berhasil ditukar!');
+    if (homeArr[0]) renderTeamCard('A1', homeArr[0], false);
+    if (awayArr[0]) renderTeamCard('B1', awayArr[0], false);
+
+    if (state.teamsPerSide === 2 && homeArr[1] && awayArr[1]) {
+      renderTeamCard('A2', homeArr[1], false);
+      renderTeamCard('B2', awayArr[1], false);
+    }
+
+    showToast('Posisi Kubu A dan Kubu B berhasil ditukar!');
   }
 
-  // --- SALIN MATCHUP KE CLIPBOARD ---
+  // --- SALIN MATCHUP KE CLIPBOARD (Format 2v2 atau 1v1) ---
   function copyMatchupDetails() {
     if (!state.currentMatch) {
       showToast('Silakan Roll Match terlebih dahulu!');
       return;
     }
 
-    const { home, away, mode, time, date } = state.currentMatch;
-    const textToCopy = `🔥 MATCHDAY ROULETTE ARENA 🔥
-🎮 HOME (Stik 1): ${home.name} [${home.categoryName}]
-⚔️ AWAY (Stik 2): ${away.name} [${away.categoryName}]
-🏆 Mode: ${mode}
+    const { home, away, mode, time, date, teamsPerSide } = state.currentMatch;
+    const is2v2 = teamsPerSide === 2 || (Array.isArray(home) && home.length === 2);
+    let textToCopy = '';
+
+    if (is2v2) {
+      const h1 = home[0] ? home[0].name : '';
+      const h2 = home[1] ? home[1].name : '';
+      const a1 = away[0] ? away[0].name : '';
+      const a2 = away[1] ? away[1].name : '';
+
+      textToCopy = `🔥 MATCHDAY ARENA 🔥
+[Kubu A / Stik 1]: ${h1} & ${h2}
+VS
+[Kubu B / Stik 2]: ${a1} & ${a2}
+🏆 Mode: ${mode} (2 Tim vs 2 Tim)
 ⏰ Jadwal Undian: ${date} pukul ${time} WIB
 Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
+    } else {
+      const h1 = Array.isArray(home) ? home[0].name : home.name;
+      const a1 = Array.isArray(away) ? away[0].name : away.name;
+
+      textToCopy = `🔥 MATCHDAY ARENA 🔥
+[Kubu A / Stik 1]: ${h1}
+VS
+[Kubu B / Stik 2]: ${a1}
+🏆 Mode: ${mode} (1 vs 1)
+⏰ Jadwal Undian: ${date} pukul ${time} WIB
+Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
+    }
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(textToCopy)
@@ -572,15 +691,20 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
 
       // Random 50:50
       const isHomeWinner = Math.random() < 0.5;
-      state.coinWinnerSlot = isHomeWinner ? 1 : 2;
+      state.coinWinnerSide = isHomeWinner ? 'A' : 'B';
 
       let resultText = '';
       if (state.currentMatch) {
-        const winner = isHomeWinner ? state.currentMatch.home : state.currentMatch.away;
-        const side = isHomeWinner ? 'HOME / STIK 1' : 'AWAY / STIK 2';
-        resultText = `🎉 Pemenang: ${winner.name} (${side})`;
+        const is2v2 = state.currentMatch.teamsPerSide === 2 || (Array.isArray(state.currentMatch.home) && state.currentMatch.home.length === 2);
+        if (isHomeWinner) {
+          const names = is2v2 ? `${state.currentMatch.home[0].name} & ${state.currentMatch.home[1].name}` : (Array.isArray(state.currentMatch.home) ? state.currentMatch.home[0].name : state.currentMatch.home.name);
+          resultText = `🎉 Pemenang: KUBU A (HOME / STIK 1) — ${names}`;
+        } else {
+          const names = is2v2 ? `${state.currentMatch.away[0].name} & ${state.currentMatch.away[1].name}` : (Array.isArray(state.currentMatch.away) ? state.currentMatch.away[0].name : state.currentMatch.away.name);
+          resultText = `🎉 Pemenang: KUBU B (AWAY / STIK 2) — ${names}`;
+        }
       } else {
-        resultText = isHomeWinner ? '🎉 Pemenang: TIM 1 (HOME / STIK 1)' : '🎉 Pemenang: TIM 2 (AWAY / STIK 2)';
+        resultText = isHomeWinner ? '🎉 Pemenang: KUBU A (HOME / STIK 1)' : '🎉 Pemenang: KUBU B (AWAY / STIK 2)';
       }
 
       DOM.coinResultBanner.textContent = resultText;
@@ -588,36 +712,31 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
 
       if (window.matchAudio) window.matchAudio.playCoinResult();
 
-      // Tandai kartu tim yang menang lempar koin
-      applyStikWinnerVisual(state.coinWinnerSlot);
+      // Tandai kubu yang menang lempar koin
+      applyStikWinnerVisual(state.coinWinnerSide);
 
       DOM.btnFlipCoin.disabled = false;
     }, 850);
   }
 
-  function applyStikWinnerVisual(slot) {
+  function applyStikWinnerVisual(side) {
     clearStikWinnerVisual();
-    const card = slot === 1 ? DOM.cardTeam1 : DOM.cardTeam2;
-    if (card) {
-      card.classList.add('home-stik-winner');
-      const sideBadge = card.querySelector('.side-badge');
-      if (sideBadge) {
-        sideBadge.innerHTML = `<span class="side-badge-dot"></span> 👑 STIK 1 (WINNER)`;
-      }
+    if (side === 'A' && DOM.kubuA) {
+      DOM.kubuA.classList.add('home-stik-winner');
+      if (DOM.kubuABadgeLabel) DOM.kubuABadgeLabel.textContent = '👑 KUBU A (STIK 1 WINNER)';
+    } else if (side === 'B' && DOM.kubuB) {
+      DOM.kubuB.classList.add('away-stik-winner');
+      if (DOM.kubuBBadgeLabel) DOM.kubuBBadgeLabel.textContent = '👑 KUBU B (STIK 2 WINNER)';
     }
   }
 
   function clearStikWinnerVisual() {
-    if (DOM.cardTeam1) {
-      DOM.cardTeam1.classList.remove('home-stik-winner');
-      const badge = DOM.cardTeam1.querySelector('.side-badge');
-      if (badge) badge.innerHTML = `<span class="side-badge-dot"></span> HOME / STIK 1`;
-    }
-    if (DOM.cardTeam2) {
-      DOM.cardTeam2.classList.remove('home-stik-winner');
-      const badge = DOM.cardTeam2.querySelector('.side-badge');
-      if (badge) badge.innerHTML = `<span class="side-badge-dot"></span> AWAY / STIK 2`;
-    }
+    if (DOM.kubuA) DOM.kubuA.classList.remove('home-stik-winner');
+    if (DOM.kubuB) DOM.kubuB.classList.remove('away-stik-winner');
+
+    const is2v2 = state.teamsPerSide === 2;
+    if (DOM.kubuABadgeLabel) DOM.kubuABadgeLabel.textContent = is2v2 ? 'KUBU A / STIK 1' : 'HOME / STIK 1';
+    if (DOM.kubuBBadgeLabel) DOM.kubuBBadgeLabel.textContent = is2v2 ? 'KUBU B / STIK 2' : 'AWAY / STIK 2';
   }
 
   // --- RIWAYAT PERTANDINGAN (MATCH HISTORY) ---
@@ -652,31 +771,49 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
       return;
     }
 
-    DOM.historyList.innerHTML = state.history.map((item, idx) => `
-      <div class="history-card">
-        <div class="history-card-top">
-          <span style="color: var(--neon-cyan); font-weight: 700;">${item.mode}</span>
-          <span>${item.date} • ${item.time}</span>
-        </div>
-        <div class="history-match-teams">
-          <div class="history-team-name" title="${item.home.name}">
-            <span style="color: var(--neon-green); font-size: 0.75rem; margin-right: 3px;">H:</span>${item.home.name}
+    DOM.historyList.innerHTML = state.history.map((item, idx) => {
+      const homeArr = Array.isArray(item.home) ? item.home : (item.home ? [item.home] : []);
+      const awayArr = Array.isArray(item.away) ? item.away : (item.away ? [item.away] : []);
+      const is2v2 = item.teamsPerSide === 2 || homeArr.length > 1;
+
+      const homeNames = homeArr.map(t => t.name).join(' & ') || 'Kubu A';
+      const awayNames = awayArr.map(t => t.name).join(' & ') || 'Kubu B';
+
+      const homeCats = [...new Set(homeArr.map(t => t.categoryName || 'Sepak Bola'))].join(', ');
+      const awayCats = [...new Set(awayArr.map(t => t.categoryName || 'Sepak Bola'))].join(', ');
+      const catText = homeCats === awayCats ? homeCats : `${homeCats} vs ${awayCats}`;
+
+      return `
+        <div class="history-card">
+          <div class="history-card-top">
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <span style="color: var(--sky-blue); font-weight: 700;">${item.mode || 'Duel'}</span>
+              <span style="font-size: 0.68rem; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--amber-yellow); font-weight: 600;">
+                ${is2v2 ? '2 vs 2 (4 Tim)' : '1 vs 1 (2 Tim)'}
+              </span>
+            </div>
+            <span>${item.date || ''} • ${item.time || ''}</span>
           </div>
-          <span class="history-vs">VS</span>
-          <div class="history-team-name" style="text-align: right;" title="${item.away.name}">
-            <span style="color: var(--neon-cyan); font-size: 0.75rem; margin-right: 3px;">A:</span>${item.away.name}
+          <div class="history-match-teams">
+            <div class="history-team-name" title="${homeNames}">
+              <span style="color: var(--amber-yellow); font-size: 0.75rem; margin-right: 3px;">H:</span>${homeNames}
+            </div>
+            <span class="history-vs">VS</span>
+            <div class="history-team-name" style="text-align: right;" title="${awayNames}">
+              <span style="color: var(--sky-blue); font-size: 0.75rem; margin-right: 3px;">A:</span>${awayNames}
+            </div>
+          </div>
+          <div class="history-card-bottom">
+            <span style="max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              ${catText}
+            </span>
+            <button class="btn-apply-history" data-history-idx="${idx}">
+              Pasang Lagi ↵
+            </button>
           </div>
         </div>
-        <div class="history-card-bottom">
-          <span style="max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-            ${item.home.categoryName} vs ${item.away.categoryName}
-          </span>
-          <button class="btn-apply-history" data-history-idx="${idx}">
-            Pasang Lagi ↵
-          </button>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     // Tambahkan event listener untuk tombol Pasang Lagi
     DOM.historyList.querySelectorAll('.btn-apply-history').forEach(btn => {
@@ -691,14 +828,30 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
     const item = state.history[index];
     if (!item) return;
 
-    state.currentMatch = item;
+    const homeArr = Array.isArray(item.home) ? item.home : (item.home ? [item.home] : []);
+    const awayArr = Array.isArray(item.away) ? item.away : (item.away ? [item.away] : []);
+    const teamsCount = item.teamsPerSide || (homeArr.length >= 2 ? 2 : 1);
+
+    setTeamsPerSide(teamsCount, false);
+
+    state.currentMatch = {
+      ...item,
+      home: homeArr,
+      away: awayArr,
+      teamsPerSide: teamsCount
+    };
     clearStikWinnerVisual();
 
-    renderTeamCard(1, item.home, false);
-    renderTeamCard(2, item.away, false);
+    if (homeArr[0]) renderTeamCard('A1', homeArr[0], false);
+    if (awayArr[0]) renderTeamCard('B1', awayArr[0], false);
+
+    if (teamsCount === 2) {
+      if (homeArr[1]) renderTeamCard('A2', homeArr[1], false);
+      if (awayArr[1]) renderTeamCard('B2', awayArr[1], false);
+    }
 
     toggleHistoryDrawer(false);
-    showToast(`Matchup ${item.home.name} vs ${item.away.name} dipasang!`);
+    showToast(`Matchup riwayat dipasang ke arena!`);
   }
 
   function clearHistory() {
@@ -723,7 +876,7 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
   function saveHistoryToStorage() {
     try {
       localStorage.setItem('gacha_match_history', JSON.stringify(state.history));
-    } catch (e) {}
+    } catch (e) { }
   }
 
   function loadHistoryFromStorage() {
@@ -733,7 +886,7 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
         state.history = JSON.parse(stored);
         updateHistoryBadge();
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   // --- TOAST NOTIFICATION ---
@@ -758,7 +911,7 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
     const width = (canvas.width = window.innerWidth);
     const height = (canvas.height = window.innerHeight);
 
-    const colors = ['#00ff88', '#00d2ff', '#ffb703', '#ffffff', '#ef233c'];
+    const colors = ['#FFBF00', '#007EFF', '#807040', '#2400FF', '#ffffff'];
     const particles = [];
     const count = 75;
 
@@ -816,6 +969,14 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
     // Tombol Utama Gacha
     if (DOM.btnRollGacha) {
       DOM.btnRollGacha.addEventListener('click', rollGacha);
+    }
+
+    // Toggle Format Tim (1 vs 1 / 2 Tim atau 2 vs 2 / 4 Tim)
+    if (DOM.btnFormat1) {
+      DOM.btnFormat1.addEventListener('click', () => setTeamsPerSide(1));
+    }
+    if (DOM.btnFormat2) {
+      DOM.btnFormat2.addEventListener('click', () => setTeamsPerSide(2));
     }
 
     // Toggle Mode

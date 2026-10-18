@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#030816">
+  <meta name="theme-color" content="#0a0e17">
   <meta name="description" content="Football Match Roulette - Acak 2 tim pertandingan sepak bola anti-bentrok untuk PS, Xbox, PC, dan konsol dengan efek suara dan simulator lempar koin.">
   <title>Football Match Roulette - Gacha Arena Pro</title>
 
@@ -37,7 +37,7 @@
         </div>
         <div>
           <div class="brand-title">
-            GACHA <span class="text-gradient-cyan">ARENA</span>
+            GACHA <span class="text-gradient-sunny">ARENA</span>
             <span class="brand-badge">PRO</span>
           </div>
           <p class="brand-tagline">Football Match Roulette & Stik 1 Decider</p>
@@ -110,6 +110,19 @@
 
         <!-- Mode Duel & Pool Indicator -->
         <div class="status-controls">
+          <!-- Format Tim: 1 Tim (1v1) vs 2 Tim (2v2) -->
+          <div class="format-pill">
+            <span class="mode-info-label">Format Tim:</span>
+            <div class="format-switch-group">
+              <button id="btnFormat1" class="btn-format-toggle" data-count="1" title="1 Tim per kubu (Total 2 Club)">
+                1 Tim <span class="format-badge-sub">1v1</span>
+              </button>
+              <button id="btnFormat2" class="btn-format-toggle active" data-count="2" title="2 Tim per kubu (Total 4 Club)">
+                2 Tim <span class="format-badge-sub">2v2</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Mode Switch -->
           <div class="mode-pill">
             <div>
@@ -125,7 +138,7 @@
           <div class="pool-status-pill">
             <span class="pulse-dot"></span>
             <span style="color: var(--text-slate-400);">Pool Aktif:</span>
-            <span id="activePoolCount" style="color: var(--neon-green); font-family: var(--font-display); font-weight: 800;">
+            <span id="activePoolCount" style="color: var(--amber-yellow); font-family: var(--font-display); font-weight: 800;">
               182 Tim
             </span>
           </div>
@@ -138,7 +151,7 @@
         <div class="category-drawer-header">
           <span>Centang liga & kategori yang ingin dimasukkan ke dalam kocokan undian:</span>
           <div style="display: flex; gap: 0.5rem;">
-            <button id="btnSelectAllCats" style="background: none; border: none; color: var(--neon-cyan); font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+            <button id="btnSelectAllCats" style="background: none; border: none; color: var(--sky-blue); font-size: 0.75rem; font-weight: 700; cursor: pointer;">
               Pilih Semua
             </button>
             <span style="color: var(--text-slate-500);">|</span>
@@ -158,30 +171,56 @@
       <!-- Top neon beam -->
       <div class="stadium-beam-line"></div>
 
-      <div class="duel-grid">
+      <div id="duelGrid" class="duel-grid format-2v2">
         
-        <!-- TEAM 1 CARD: HOME / STIK 1 -->
-        <div id="cardTeam1" class="team-card home-card">
-          <div class="card-top-bar">
+        <!-- KUBU A (HOME / STIK 1) -->
+        <div id="kubuA" class="kubu-section home-kubu">
+          <div class="kubu-top-header">
             <span class="side-badge home">
-              <span class="side-badge-dot"></span> HOME / STIK 1
+              <span class="side-badge-dot"></span> <span id="kubuABadgeLabel">KUBU A / STIK 1</span>
             </span>
-            <span id="t1CategoryBadge" class="category-tag">Siap Diundi</span>
+            <span id="kubuAMeta" class="kubu-meta-tag">2 Pilihan Tim</span>
           </div>
 
-          <!-- Emblem / Logo Box -->
-          <div id="t1EmblemWrapper" class="emblem-wrapper">
-            <img id="t1Logo" class="emblem-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Logo Tim 1" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';">
-            <span id="t1TextFallback" class="emblem-text-fallback">?</span>
-          </div>
+          <div class="kubu-cards-grid">
+            <!-- Card Team A1 -->
+            <div id="cardTeamA1" class="team-card home-card">
+              <div class="card-slot-header">
+                <span class="slot-badge amber">PILIHAN 1</span>
+              </div>
+              <!-- Emblem / Logo Box (200px - 220px) -->
+              <div id="tA1EmblemWrapper" class="emblem-wrapper">
+                <img id="tA1Logo" class="emblem-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Logo Tim A1" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';">
+                <span id="tA1TextFallback" class="emblem-text-fallback">?</span>
+              </div>
+              <div class="team-name-box">
+                <h3 id="tA1Name" class="team-title">Tim 1</h3>
+              </div>
+              <div class="team-category-box">
+                <span id="tA1CategoryBadge" class="category-tag">Siap Diundi</span>
+              </div>
+              <p id="tA1Subtext" class="team-subtext">Tekan Roll Match untuk mengundi</p>
+            </div>
 
-          <!-- Team Name -->
-          <div class="team-name-box">
-            <h2 id="t1Name" class="team-title">Tim Kandang</h2>
+            <!-- Card Team A2 -->
+            <div id="cardTeamA2" class="team-card home-card second-card">
+              <div class="card-slot-header">
+                <span class="slot-badge amber">PILIHAN 2</span>
+              </div>
+              <!-- Emblem / Logo Box (200px - 220px) -->
+              <div id="tA2EmblemWrapper" class="emblem-wrapper">
+                <img id="tA2Logo" class="emblem-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Logo Tim A2" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';">
+                <span id="tA2TextFallback" class="emblem-text-fallback">?</span>
+              </div>
+              <div class="team-name-box">
+                <h3 id="tA2Name" class="team-title">Tim 2</h3>
+              </div>
+              <div class="team-category-box">
+                <span id="tA2CategoryBadge" class="category-tag">Siap Diundi</span>
+              </div>
+              <p id="tA2Subtext" class="team-subtext">Tekan Roll Match untuk mengundi</p>
+            </div>
           </div>
-
-          <!-- Subtext Tagline -->
-          <p id="t1Subtext" class="team-subtext">Tekan Roll Match untuk mengundi</p>
         </div>
 
         <!-- CENTER VERSUS DIVIDER -->
@@ -192,28 +231,54 @@
           <div class="vs-axis-line"></div>
         </div>
 
-        <!-- TEAM 2 CARD: AWAY / STIK 2 -->
-        <div id="cardTeam2" class="team-card away-card">
-          <div class="card-top-bar">
+        <!-- KUBU B (AWAY / STIK 2) -->
+        <div id="kubuB" class="kubu-section away-kubu">
+          <div class="kubu-top-header">
             <span class="side-badge away">
-              <span class="side-badge-dot"></span> AWAY / STIK 2
+              <span class="side-badge-dot"></span> <span id="kubuBBadgeLabel">KUBU B / STIK 2</span>
             </span>
-            <span id="t2CategoryBadge" class="category-tag">Siap Diundi</span>
+            <span id="kubuBMeta" class="kubu-meta-tag">2 Pilihan Tim</span>
           </div>
 
-          <!-- Emblem / Logo Box -->
-          <div id="t2EmblemWrapper" class="emblem-wrapper">
-            <img id="t2Logo" class="emblem-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Logo Tim 2" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';">
-            <span id="t2TextFallback" class="emblem-text-fallback">?</span>
-          </div>
+          <div class="kubu-cards-grid">
+            <!-- Card Team B1 -->
+            <div id="cardTeamB1" class="team-card away-card">
+              <div class="card-slot-header">
+                <span class="slot-badge blue">PILIHAN 1</span>
+              </div>
+              <!-- Emblem / Logo Box (200px - 220px) -->
+              <div id="tB1EmblemWrapper" class="emblem-wrapper">
+                <img id="tB1Logo" class="emblem-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Logo Tim B1" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';">
+                <span id="tB1TextFallback" class="emblem-text-fallback">?</span>
+              </div>
+              <div class="team-name-box">
+                <h3 id="tB1Name" class="team-title">Tim 3</h3>
+              </div>
+              <div class="team-category-box">
+                <span id="tB1CategoryBadge" class="category-tag">Siap Diundi</span>
+              </div>
+              <p id="tB1Subtext" class="team-subtext">Tekan Roll Match untuk mengundi</p>
+            </div>
 
-          <!-- Team Name -->
-          <div class="team-name-box">
-            <h2 id="t2Name" class="team-title">Tim Tandang</h2>
+            <!-- Card Team B2 -->
+            <div id="cardTeamB2" class="team-card away-card second-card">
+              <div class="card-slot-header">
+                <span class="slot-badge blue">PILIHAN 2</span>
+              </div>
+              <!-- Emblem / Logo Box (200px - 220px) -->
+              <div id="tB2EmblemWrapper" class="emblem-wrapper">
+                <img id="tB2Logo" class="emblem-img" src="https://cdn-icons-png.flaticon.com/512/53/53283.png" alt="Logo Tim B2" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';">
+                <span id="tB2TextFallback" class="emblem-text-fallback">?</span>
+              </div>
+              <div class="team-name-box">
+                <h3 id="tB2Name" class="team-title">Tim 4</h3>
+              </div>
+              <div class="team-category-box">
+                <span id="tB2CategoryBadge" class="category-tag">Siap Diundi</span>
+              </div>
+              <p id="tB2Subtext" class="team-subtext">Tekan Roll Match untuk mengundi</p>
+            </div>
           </div>
-
-          <!-- Subtext Tagline -->
-          <p id="t2Subtext" class="team-subtext">Tekan Roll Match untuk mengundi</p>
         </div>
 
       </div>
@@ -246,33 +311,6 @@
           </button>
         </div>
 
-      </div>
-    </section>
-
-    <!-- ================= INFO & RULES CARDS ================= -->
-    <section class="info-cards-grid">
-      <div class="glass-panel info-card">
-        <div class="info-icon-box" style="color: var(--neon-green);">🎯</div>
-        <div>
-          <h4>100% Bebas Bentrok</h4>
-          <p>Algoritma memastikan Tim 1 dan Tim 2 tidak akan pernah sama dalam satu kali putaran.</p>
-        </div>
-      </div>
-
-      <div class="glass-panel info-card">
-        <div class="info-icon-box" style="color: var(--neon-cyan);">⚔️</div>
-        <div>
-          <h4>Mode Derby & Liga Sama</h4>
-          <p>Ingin duel satu liga? Aktifkan mode <em>Satu Kategori Sama</em> pada panel pengaturan atas.</p>
-        </div>
-      </div>
-
-      <div class="glass-panel info-card">
-        <div class="info-icon-box" style="color: var(--electric-gold);">🎮</div>
-        <div>
-          <h4>Penentu Stik 1 & Jersey</h4>
-          <p>Gunakan fitur <strong>Lempar Koin</strong> untuk menentukan siapa pemegang Stik 1 / Tuan Rumah sebelum kick-off.</p>
-        </div>
       </div>
     </section>
 
