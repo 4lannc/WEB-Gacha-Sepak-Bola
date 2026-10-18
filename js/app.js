@@ -21,7 +21,10 @@
     isRolling: false,
     currentMatch: null,
     coinWinnerSide: null, // 'A' | 'B'
-    history: []
+    history: [],
+    selectedHistoryIndices: new Set(),
+    directoryActiveCategory: 'all',
+    directorySearchQuery: ''
   };
 
   // --- ELEMEN DOM CACHE ---
@@ -51,6 +54,11 @@
     DOM.historyDrawer = document.getElementById('historyDrawer');
     DOM.btnCloseHistory = document.getElementById('btnCloseHistory');
     DOM.btnClearHistory = document.getElementById('btnClearHistory');
+    DOM.historyToolbar = document.getElementById('historyToolbar');
+    DOM.btnSelectAllHistory = document.getElementById('btnSelectAllHistory');
+    DOM.selectAllHistoryText = document.getElementById('selectAllHistoryText');
+    DOM.historySelectedCountBadge = document.getElementById('historySelectedCountBadge');
+    DOM.btnDeleteSelectedHistory = document.getElementById('btnDeleteSelectedHistory');
     DOM.historyList = document.getElementById('historyList');
     DOM.historyCountBadge = document.getElementById('historyCountBadge');
     DOM.coinModal = document.getElementById('coinModal');
@@ -58,6 +66,18 @@
     DOM.btnFlipCoin = document.getElementById('btnFlipCoin');
     DOM.coin3D = document.getElementById('coin3D');
     DOM.coinResultBanner = document.getElementById('coinResultBanner');
+
+    // Directory Modal DOM Cache
+    DOM.btnOpenDirectory = document.getElementById('btnOpenDirectory');
+    DOM.directoryModal = document.getElementById('directoryModal');
+    DOM.btnCloseDirectory = document.getElementById('btnCloseDirectory');
+    DOM.directoryTotalBadge = document.getElementById('directoryTotalBadge');
+    DOM.directorySearchInput = document.getElementById('directorySearchInput');
+    DOM.btnClearSearch = document.getElementById('btnClearSearch');
+    DOM.directoryCategoryTabs = document.getElementById('directoryCategoryTabs');
+    DOM.directoryFilteredCount = document.getElementById('directoryFilteredCount');
+    DOM.directoryTeamGrid = document.getElementById('directoryTeamGrid');
+    DOM.directoryEmptyState = document.getElementById('directoryEmptyState');
     DOM.poolDrawer = document.getElementById('poolDrawer');
     DOM.btnCustomFilter = document.getElementById('btnCustomFilter');
     DOM.filterChevron = document.getElementById('filterChevron');
@@ -78,7 +98,7 @@
   }
 
   // --- INITIALIZATION ---
-  document.addEventListener('DOMContentLoaded', () => {
+  function initApp() {
     initDOM();
     initAudioUI();
     calculatePresetCounts();
@@ -87,7 +107,13 @@
     setTeamsPerSide(2, false); // Default ke 2 vs 2 (4 tim)
     attachEventListeners();
     loadHistoryFromStorage();
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 
   // --- HITUNG JUMLAH PRESET ---
   function calculatePresetCounts() {
@@ -754,12 +780,114 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
   function addMatchToHistory(match) {
     state.history.unshift(match);
     if (state.history.length > 30) state.history.pop();
+    state.selectedHistoryIndices.clear();
     saveHistoryToStorage();
     updateHistoryBadge();
   }
 
+  function updateHistoryToolbar() {
+    if (!DOM.historyToolbar) return;
+
+    if (state.history.length === 0) {
+      DOM.historyToolbar.style.display = 'none';
+      return;
+    }
+
+    DOM.historyToolbar.style.display = 'flex';
+
+    const selectedCount = state.selectedHistoryIndices.size;
+    const allSelected = selectedCount > 0 && selectedCount === state.history.length;
+
+    // Update teks tombol "Pilih Semua" / "Batal Pilih"
+    if (DOM.selectAllHistoryText) {
+      DOM.selectAllHistoryText.textContent = allSelected ? 'Batal Pilih' : 'Pilih Semua';
+    }
+
+    // Update badge jumlah terpilih
+    if (DOM.historySelectedCountBadge) {
+      if (selectedCount > 0) {
+        DOM.historySelectedCountBadge.textContent = `${selectedCount} terpilih`;
+        DOM.historySelectedCountBadge.style.display = 'inline-block';
+      } else {
+        DOM.historySelectedCountBadge.style.display = 'none';
+      }
+    }
+
+    // Update status tombol Hapus yang Dipilih
+    if (DOM.btnDeleteSelectedHistory) {
+      DOM.btnDeleteSelectedHistory.disabled = selectedCount === 0;
+      const span = DOM.btnDeleteSelectedHistory.querySelector('span');
+      if (span) {
+        span.textContent = selectedCount > 0 ? `Hapus yang Dipilih (${selectedCount})` : 'Hapus yang Dipilih';
+      }
+    }
+  }
+
+  function toggleSelectAllHistory() {
+    if (state.history.length === 0) return;
+
+    const allSelected = state.selectedHistoryIndices.size === state.history.length;
+    if (allSelected) {
+      state.selectedHistoryIndices.clear();
+    } else {
+      state.selectedHistoryIndices.clear();
+      for (let i = 0; i < state.history.length; i++) {
+        state.selectedHistoryIndices.add(i);
+      }
+    }
+
+    renderHistoryList();
+  }
+
+  function deleteSelectedHistory() {
+    const count = state.selectedHistoryIndices.size;
+    if (count === 0) {
+      showToast('Pilih minimal satu pertandingan untuk dihapus.');
+      return;
+    }
+
+    if (!confirm(`Hapus ${count} pertandingan yang dipilih dari riwayat?`)) {
+      return;
+    }
+
+    state.history = state.history.filter((_, idx) => !state.selectedHistoryIndices.has(idx));
+    state.selectedHistoryIndices.clear();
+
+    saveHistoryToStorage();
+    updateHistoryBadge();
+    renderHistoryList();
+    showToast(`${count} riwayat pertandingan berhasil dihapus.`);
+  }
+
+  function clearHistory() {
+    if (state.history.length === 0) {
+      showToast('Riwayat pertandingan sudah kosong.');
+      return;
+    }
+
+    if (!confirm('Apakah Anda yakin ingin menghapus seluruh riwayat pertandingan?')) {
+      return;
+    }
+
+    state.history = [];
+    state.selectedHistoryIndices.clear();
+    saveHistoryToStorage();
+    renderHistoryList();
+    updateHistoryBadge();
+    showToast('Seluruh riwayat pertandingan telah dihapus.');
+  }
+
   function renderHistoryList() {
     if (!DOM.historyList) return;
+
+    // Bersihkan index seleksi yang di luar jangkauan riwayat
+    const validIndices = new Set();
+    state.selectedHistoryIndices.forEach(idx => {
+      if (idx >= 0 && idx < state.history.length) validIndices.add(idx);
+    });
+    state.selectedHistoryIndices = validIndices;
+
+    updateHistoryToolbar();
 
     if (state.history.length === 0) {
       DOM.historyList.innerHTML = `
@@ -783,41 +911,68 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
       const awayCats = [...new Set(awayArr.map(t => t.categoryName || 'Sepak Bola'))].join(', ');
       const catText = homeCats === awayCats ? homeCats : `${homeCats} vs ${awayCats}`;
 
+      const isChecked = state.selectedHistoryIndices.has(idx);
+
       return `
-        <div class="history-card">
-          <div class="history-card-top">
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <span style="color: var(--sky-blue); font-weight: 700;">${item.mode || 'Duel'}</span>
-              <span style="font-size: 0.68rem; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--amber-yellow); font-weight: 600;">
-                ${is2v2 ? '2 vs 2 (4 Tim)' : '1 vs 1 (2 Tim)'}
+        <div class="history-card ${isChecked ? 'selected' : ''}" data-history-idx="${idx}">
+          <label class="history-checkbox-wrapper" title="Tandai untuk dihapus" onclick="event.stopPropagation();">
+            <input type="checkbox" class="history-item-checkbox" data-history-idx="${idx}" ${isChecked ? 'checked' : ''}>
+            <span class="custom-checkbox-indicator"></span>
+          </label>
+          <div class="history-card-main">
+            <div class="history-card-top">
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <span style="color: var(--sky-blue); font-weight: 700;">${item.mode || 'Duel'}</span>
+                <span style="font-size: 0.68rem; padding: 1px 6px; border-radius: 4px; background: rgba(255,255,255,0.08); color: var(--amber-yellow); font-weight: 600;">
+                  ${is2v2 ? '2 vs 2 (4 Tim)' : '1 vs 1 (2 Tim)'}
+                </span>
+              </div>
+              <span>${item.date || ''} • ${item.time || ''}</span>
+            </div>
+            <div class="history-match-teams">
+              <div class="history-team-name" title="${homeNames}">
+                <span style="color: var(--amber-yellow); font-size: 0.75rem; margin-right: 3px;">H:</span>${homeNames}
+              </div>
+              <span class="history-vs">VS</span>
+              <div class="history-team-name" style="text-align: right;" title="${awayNames}">
+                <span style="color: var(--sky-blue); font-size: 0.75rem; margin-right: 3px;">A:</span>${awayNames}
+              </div>
+            </div>
+            <div class="history-card-bottom">
+              <span style="max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                ${catText}
               </span>
+              <button class="btn-apply-history" data-history-idx="${idx}" title="Muat pertandingan ini kembali ke arena">
+                Pasang Lagi ↵
+              </button>
             </div>
-            <span>${item.date || ''} • ${item.time || ''}</span>
-          </div>
-          <div class="history-match-teams">
-            <div class="history-team-name" title="${homeNames}">
-              <span style="color: var(--amber-yellow); font-size: 0.75rem; margin-right: 3px;">H:</span>${homeNames}
-            </div>
-            <span class="history-vs">VS</span>
-            <div class="history-team-name" style="text-align: right;" title="${awayNames}">
-              <span style="color: var(--sky-blue); font-size: 0.75rem; margin-right: 3px;">A:</span>${awayNames}
-            </div>
-          </div>
-          <div class="history-card-bottom">
-            <span style="max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-              ${catText}
-            </span>
-            <button class="btn-apply-history" data-history-idx="${idx}">
-              Pasang Lagi ↵
-            </button>
           </div>
         </div>
       `;
     }).join('');
 
-    // Tambahkan event listener untuk tombol Pasang Lagi
+    // Listener checkbox per item
+    DOM.historyList.querySelectorAll('.history-item-checkbox').forEach(chk => {
+      chk.addEventListener('change', (e) => {
+        const idx = parseInt(e.target.getAttribute('data-history-idx'), 10);
+        if (e.target.checked) {
+          state.selectedHistoryIndices.add(idx);
+        } else {
+          state.selectedHistoryIndices.delete(idx);
+        }
+
+        const card = DOM.historyList.querySelector(`.history-card[data-history-idx="${idx}"]`);
+        if (card) {
+          card.classList.toggle('selected', e.target.checked);
+        }
+        updateHistoryToolbar();
+      });
+    });
+
+    // Listener tombol Pasang Lagi
     DOM.historyList.querySelectorAll('.btn-apply-history').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const idx = parseInt(e.currentTarget.getAttribute('data-history-idx'), 10);
         applyMatchFromHistory(idx);
       });
@@ -854,15 +1009,6 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
     showToast(`Matchup riwayat dipasang ke arena!`);
   }
 
-  function clearHistory() {
-    if (state.history.length === 0) return;
-    state.history = [];
-    saveHistoryToStorage();
-    renderHistoryList();
-    updateHistoryBadge();
-    showToast('Seluruh riwayat pertandingan telah dihapus.');
-  }
-
   function updateHistoryBadge() {
     if (!DOM.historyCountBadge) return;
     if (state.history.length > 0) {
@@ -884,9 +1030,188 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
       const stored = localStorage.getItem('gacha_match_history');
       if (stored) {
         state.history = JSON.parse(stored);
+        if (!Array.isArray(state.history)) state.history = [];
         updateHistoryBadge();
       }
-    } catch (e) { }
+    } catch (e) {
+      state.history = [];
+    }
+  }
+
+  // --- DAFTAR TIM / DIREKTORI KLUB & TIMNAS ---
+  const DIRECTORY_CATEGORIES = [
+    { id: 'all', label: 'Semua' },
+    { id: 'premier_league', label: 'Premier League' },
+    { id: 'championship', label: 'Championship' },
+    { id: 'serie_a', label: 'Serie A' },
+    { id: 'laliga', label: 'LaLiga' },
+    { id: 'ligue_1', label: 'Ligue 1' },
+    { id: 'blanda_jerman_portugal', label: 'Jerman/Belanda' },
+    { id: 'eropa_lainnya', label: 'Eropa Lainnya' },
+    { id: 'brazil', label: 'Brazil' },
+    { id: 'argentina_mls', label: 'Argentina/MLS' },
+    { id: 'arab', label: 'Arab' },
+    { id: 'timnas_eropa', label: 'Timnas Eropa' },
+    { id: 'timnas_afrika', label: 'Timnas Afrika' },
+    { id: 'timnas_amerika', label: 'Timnas Amerika' },
+    { id: 'timnas_asia_oseania', label: 'Timnas Asia & Oseania' }
+  ];
+
+  function getAllTeamsFlattened() {
+    if (!window.TEAMS_DATABASE) return [];
+    const list = [];
+    Object.entries(window.TEAMS_DATABASE).forEach(([catKey, catVal]) => {
+      if (Array.isArray(catVal.teams)) {
+        catVal.teams.forEach(team => {
+          list.push({
+            name: team.name,
+            short: team.short,
+            colors: team.colors || ['#ffffff', '#000000'],
+            logo: team.logo,
+            categoryId: catKey,
+            categoryName: catVal.name,
+            categoryType: catVal.type || 'club'
+          });
+        });
+      }
+    });
+    return list;
+  }
+
+  function openDirectoryModal() {
+    if (!DOM.directoryModal) DOM.directoryModal = document.getElementById('directoryModal');
+    if (!DOM.directoryModal) return;
+    DOM.directoryModal.classList.remove('hidden');
+    renderDirectoryTabs();
+    renderDirectoryGrid();
+    if (!DOM.directorySearchInput) DOM.directorySearchInput = document.getElementById('directorySearchInput');
+    if (DOM.directorySearchInput) {
+      setTimeout(() => {
+        DOM.directorySearchInput.focus();
+      }, 80);
+    }
+  }
+
+  function closeDirectoryModal() {
+    if (!DOM.directoryModal) DOM.directoryModal = document.getElementById('directoryModal');
+    if (!DOM.directoryModal) return;
+    DOM.directoryModal.classList.add('hidden');
+  }
+
+  // Ekspos fungsi ke global scope untuk fleksibilitas
+  window.openDirectoryModal = openDirectoryModal;
+  window.closeDirectoryModal = closeDirectoryModal;
+
+  function renderDirectoryTabs() {
+    if (!DOM.directoryCategoryTabs) DOM.directoryCategoryTabs = document.getElementById('directoryCategoryTabs');
+    if (!DOM.directoryCategoryTabs) return;
+    DOM.directoryCategoryTabs.innerHTML = '';
+
+    const allTeams = getAllTeamsFlattened();
+    const totalCount = allTeams.length;
+
+    DIRECTORY_CATEGORIES.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `directory-tab-pill ${state.directoryActiveCategory === cat.id ? 'active' : ''}`;
+      btn.setAttribute('data-category', cat.id);
+
+      let count = 0;
+      if (cat.id === 'all') {
+        count = totalCount;
+      } else {
+        count = allTeams.filter(t => t.categoryId === cat.id).length;
+      }
+
+      btn.innerHTML = `<span>${cat.label}</span><span class="pill-count">${count}</span>`;
+
+      btn.addEventListener('click', () => {
+        if (state.directoryActiveCategory === cat.id) return;
+        state.directoryActiveCategory = cat.id;
+        DOM.directoryCategoryTabs.querySelectorAll('.directory-tab-pill').forEach(p => {
+          p.classList.toggle('active', p.getAttribute('data-category') === cat.id);
+        });
+        renderDirectoryGrid();
+      });
+
+      DOM.directoryCategoryTabs.appendChild(btn);
+    });
+  }
+
+  function renderDirectoryGrid() {
+    if (!DOM.directoryTeamGrid) DOM.directoryTeamGrid = document.getElementById('directoryTeamGrid');
+    if (!DOM.directoryTotalBadge) DOM.directoryTotalBadge = document.getElementById('directoryTotalBadge');
+    if (!DOM.directoryFilteredCount) DOM.directoryFilteredCount = document.getElementById('directoryFilteredCount');
+    if (!DOM.directoryEmptyState) DOM.directoryEmptyState = document.getElementById('directoryEmptyState');
+    if (!DOM.directoryTeamGrid) return;
+
+    const allTeams = getAllTeamsFlattened();
+    const query = (state.directorySearchQuery || '').trim().toLowerCase();
+    const activeCat = state.directoryActiveCategory || 'all';
+
+    if (DOM.directoryTotalBadge) {
+      DOM.directoryTotalBadge.textContent = `${allTeams.length} Tim Terdaftar`;
+    }
+
+    const filtered = allTeams.filter(team => {
+      const matchesCategory = activeCat === 'all' || team.categoryId === activeCat;
+      if (!matchesCategory) return false;
+
+      if (!query) return true;
+
+      const nameMatch = team.name.toLowerCase().includes(query);
+      const shortMatch = team.short && team.short.toLowerCase().includes(query);
+      const categoryMatch = team.categoryName.toLowerCase().includes(query);
+
+      return nameMatch || shortMatch || categoryMatch;
+    });
+
+    if (DOM.directoryFilteredCount) {
+      const catLabel = (DIRECTORY_CATEGORIES.find(c => c.id === activeCat) || {}).label || 'Semua';
+      if (query) {
+        DOM.directoryFilteredCount.textContent = `Menampilkan ${filtered.length} dari ${allTeams.length} tim untuk pencarian "${state.directorySearchQuery}"`;
+      } else if (activeCat !== 'all') {
+        DOM.directoryFilteredCount.textContent = `Menampilkan ${filtered.length} tim kategori ${catLabel}`;
+      } else {
+        DOM.directoryFilteredCount.textContent = `Menampilkan seluruh ${filtered.length} tim terdaftar`;
+      }
+    }
+
+    if (filtered.length === 0) {
+      DOM.directoryTeamGrid.innerHTML = '';
+      if (DOM.directoryEmptyState) DOM.directoryEmptyState.classList.remove('hidden');
+      return;
+    }
+
+    if (DOM.directoryEmptyState) DOM.directoryEmptyState.classList.add('hidden');
+
+    DOM.directoryTeamGrid.innerHTML = filtered.map(team => {
+      const isNation = team.categoryType === 'nation';
+      return `
+        <div class="dir-team-card" data-cat="${team.categoryId}" data-team-name="${team.name}" data-cat-name="${team.categoryName}" title="${team.name} (${team.categoryName})">
+          <div class="dir-logo-wrapper">
+            <img 
+              src="${team.logo || 'https://cdn-icons-png.flaticon.com/512/53/53283.png'}" 
+              alt="${team.name}" 
+              class="dir-team-logo" 
+              loading="lazy" 
+              onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png';"
+            >
+          </div>
+          <div class="dir-team-name">${team.name}</div>
+          <div class="dir-team-badge ${isNation ? 'nation' : ''}">${team.categoryName}</div>
+        </div>
+      `;
+    }).join('');
+
+    // Klik kartu tim untuk menampilkan info toast
+    DOM.directoryTeamGrid.querySelectorAll('.dir-team-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const teamName = card.getAttribute('data-team-name') || '';
+        const catName = card.getAttribute('data-cat-name') || '';
+        showToast(`⚽ ${teamName} • ${catName}`);
+      });
+    });
   }
 
   // --- TOAST NOTIFICATION ---
@@ -1015,12 +1340,53 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
       DOM.btnFlipCoin.addEventListener('click', flipCoin);
     }
 
+    // Modal Daftar Tim / Direktori Klub
+    if (DOM.btnOpenDirectory) {
+      DOM.btnOpenDirectory.addEventListener('click', openDirectoryModal);
+    }
+    if (DOM.btnCloseDirectory) {
+      DOM.btnCloseDirectory.addEventListener('click', closeDirectoryModal);
+    }
+    if (DOM.directoryModal) {
+      DOM.directoryModal.addEventListener('click', (e) => {
+        if (e.target === DOM.directoryModal) {
+          closeDirectoryModal();
+        }
+      });
+    }
+    if (DOM.directorySearchInput) {
+      DOM.directorySearchInput.addEventListener('input', (e) => {
+        state.directorySearchQuery = e.target.value;
+        if (DOM.btnClearSearch) {
+          DOM.btnClearSearch.classList.toggle('hidden', !e.target.value);
+        }
+        renderDirectoryGrid();
+      });
+    }
+    if (DOM.btnClearSearch) {
+      DOM.btnClearSearch.addEventListener('click', () => {
+        state.directorySearchQuery = '';
+        if (DOM.directorySearchInput) {
+          DOM.directorySearchInput.value = '';
+          DOM.directorySearchInput.focus();
+        }
+        DOM.btnClearSearch.classList.add('hidden');
+        renderDirectoryGrid();
+      });
+    }
+
     // Drawer Riwayat
     if (DOM.btnOpenHistory) {
       DOM.btnOpenHistory.addEventListener('click', () => toggleHistoryDrawer(true));
     }
     if (DOM.btnCloseHistory) {
       DOM.btnCloseHistory.addEventListener('click', () => toggleHistoryDrawer(false));
+    }
+    if (DOM.btnSelectAllHistory) {
+      DOM.btnSelectAllHistory.addEventListener('click', toggleSelectAllHistory);
+    }
+    if (DOM.btnDeleteSelectedHistory) {
+      DOM.btnDeleteSelectedHistory.addEventListener('click', deleteSelectedHistory);
     }
     if (DOM.btnClearHistory) {
       DOM.btnClearHistory.addEventListener('click', clearHistory);
@@ -1052,6 +1418,7 @@ Siapkan stik, adu strategi, dan raih kemenangan! ⚽`;
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeCoinModal();
+        closeDirectoryModal();
         toggleHistoryDrawer(false);
       }
     });

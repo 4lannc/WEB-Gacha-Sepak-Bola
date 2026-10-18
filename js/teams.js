@@ -140,145 +140,145 @@ const TEAMS_DATABASE = {
         name: "Birmingham City F.C.",
         short: "BCF",
         colors: ["#0000FF", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/56.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/6/68/Birmingham_City_FC_logo.svg"
       },
       {
         name: "Blackburn Rovers F.C.",
         short: "ROV",
         colors: ["#00509F", "#E31B23"],
-        logo: "https://media.api-sports.io/football/teams/67.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/0/0f/Blackburn_Rovers.svg"
       },
       {
         name: "Bristol City F.C.",
         short: "BRC",
         colors: ["#E31B23", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/71.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/f/f5/Bristol_City_crest.svg"
       },
       {
         name: "Charlton Athletic F.C.",
         short: "CHA",
         colors: ["#ED1C24", "#000000"],
-        logo: "https://media.api-sports.io/football/teams/61.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/f/f5/Charlton_Athletic_FC_crest.svg"
       },
       {
         name: "Coventry City F.C.",
         short: "COV",
         colors: ["#69B3E7", "#132257"],
-        logo: "https://media.api-sports.io/football/teams/1359.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/7/7b/Coventry_City_FC_crest.svg"
       },
       {
         name: "Derby County F.C.",
         short: "DER",
         colors: ["#000000", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/58.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/4/4a/Derby_County_crest.svg"
       },
       {
         name: "Hull City A.F.C.",
         short: "HUL",
         colors: ["#F58220", "#000000"],
-        logo: "https://media.api-sports.io/football/teams/64.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/5/54/Hull_City_A.F.C._logo.svg"
       },
       {
         name: "Ipswich Town F.C.",
         short: "IPS",
         colors: ["#003399", "#E03A3E"],
-        logo: "https://media.api-sports.io/football/teams/57.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/4/43/Ipswich_Town.svg"
       },
       {
         name: "Leicester City F.C.",
         short: "LEI",
         colors: ["#003090", "#FDBE11"],
-        logo: "https://media.api-sports.io/football/teams/46.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/2/2d/Leicester_City_crest.svg"
       },
       {
         name: "Middlesbrough F.C.",
         short: "MID",
         colors: ["#D71920", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/68.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/2/2c/Middlesbrough_FC_crest.svg"
       },
       {
         name: "Millwall F.C.",
         short: "MIL",
         colors: ["#002447", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/70.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/9/98/Millwall_FC_crest.svg"
       },
       {
         name: "Norwich City F.C.",
         short: "NOR",
         colors: ["#FFF200", "#00A651"],
-        logo: "https://media.api-sports.io/football/teams/72.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/1/17/Norwich_City_FC_logo.svg"
       },
       {
         name: "Oxford United F.C.",
         short: "OXF",
         colors: ["#FFD100", "#002B49"],
-        logo: "https://media.api-sports.io/football/teams/1360.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/3/3e/Oxford_United_FC_logo.svg"
       },
       {
         name: "Portsmouth F.C.",
         short: "POR",
         colors: ["#001489", "#D71920"],
-        logo: "https://media.api-sports.io/football/teams/69.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/3/3c/Portsmouth_FC_crest.svg"
       },
       {
         name: "Preston North End F.C.",
         short: "PNE",
         colors: ["#FFFFFF", "#002B49"],
-        logo: "https://media.api-sports.io/football/teams/60.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/8/82/Preston_North_End_FC.svg"
       },
       {
         name: "Queens Park Rangers F.C.",
         short: "QPR",
         colors: ["#1D70B8", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/73.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/3/31/Queens_Park_Rangers_crest.svg"
       },
       {
         name: "Sheffield United F.C.",
         short: "SHU",
         colors: ["#EE2737", "#000000"],
-        logo: "https://media.api-sports.io/football/teams/62.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/9/9c/Sheffield_United_FC_logo.svg"
       },
       {
         name: "Sheffield Wednesday F.C.",
         short: "SHW",
         colors: ["#00539F", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/74.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/a/a5/Sheffield_Wednesday.svg"
       },
       {
         name: "Southampton F.C.",
         short: "SOU",
         colors: ["#D71920", "#132257"],
-        logo: "https://media.api-sports.io/football/teams/41.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/c/c9/FC_Southampton.svg"
       },
       {
         name: "Stoke City F.C.",
         short: "STO",
         colors: ["#E03A3E", "#002F6C"],
-        logo: "https://media.api-sports.io/football/teams/75.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/b/bf/Stoke_City_FC_crest_2026.svg"
       },
       {
         name: "Swansea City A.F.C.",
         short: "SWA",
         colors: ["#000000", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/76.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/f/f9/Swansea_City_AFC_logo.svg"
       },
       {
         name: "Watford F.C.",
         short: "WAT",
         colors: ["#FBEE23", "#ED2127"],
-        logo: "https://media.api-sports.io/football/teams/38.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/e/e2/Watford.svg"
       },
       {
         name: "West Bromwich Albion F.C.",
         short: "WBA",
         colors: ["#122F67", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/78.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/8/8b/West_Bromwich_Albion.svg"
       },
       {
         name: "Wrexham A.F.C.",
         short: "WRX",
         colors: ["#DF181F", "#008054"],
-        logo: "https://media.api-sports.io/football/teams/1824.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/0/0d/Wrexham_A.F.C._Logo.svg"
       }
     ]
   },
@@ -294,115 +294,115 @@ const TEAMS_DATABASE = {
         name: "Atalanta B.C.",
         short: "ATA",
         colors: ["#1E71B8", "#000000"],
-        logo: "https://media.api-sports.io/football/teams/499.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/6/66/AtalantaBC.svg"
       },
       {
         name: "Bologna F.C. 1909",
         short: "BOL",
         colors: ["#A31A2F", "#172A45"],
-        logo: "https://media.api-sports.io/football/teams/500.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Bologna_F.C._1909_logo.svg"
       },
       {
         name: "Cagliari Calcio",
         short: "CAG",
         colors: ["#C8102E", "#0B2240"],
-        logo: "https://media.api-sports.io/football/teams/490.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/6/61/Cagliari_Calcio_1920.svg"
       },
       {
         name: "Como 1907",
         short: "COM",
         colors: ["#0038A8", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/889.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/9/99/Calcio_Como_-_logo_%28Italy%2C_2019-%29.svg"
       },
       {
         name: "U.S. Cremonese",
         short: "CRE",
         colors: ["#A21920", "#868A8E"],
-        logo: "https://media.api-sports.io/football/teams/520.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/e/e1/US_Cremonese_logo.svg"
       },
       {
         name: "ACF Fiorentina",
         short: "FIO",
         colors: ["#482E92", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/502.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/8/8c/ACF_Fiorentina_-_logo_%28Italy%2C_2022%29.svg"
       },
       {
         name: "Genoa C.F.C.",
         short: "GEN",
         colors: ["#A6192E", "#0C2340"],
-        logo: "https://media.api-sports.io/football/teams/495.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/2/2c/Genoa_CFC_crest.svg"
       },
       {
         name: "Hellas Verona F.C.",
         short: "VER",
         colors: ["#003366", "#FFCC00"],
-        logo: "https://media.api-sports.io/football/teams/504.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/9/92/Hellas_Verona_FC_logo_%282020%29.svg"
       },
       {
         name: "F.C. Internazionale Milano",
         short: "INT",
         colors: ["#010E80", "#000000"],
-        logo: "https://media.api-sports.io/football/teams/505.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg"
       },
       {
         name: "Juventus F.C.",
         short: "JUV",
         colors: ["#000000", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/496.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Juventus_FC_-_logo_black_%28Italy%2C_2020%29.svg"
       },
       {
         name: "S.S. Lazio",
         short: "LAZ",
         colors: ["#87D8F7", "#002F6C"],
-        logo: "https://media.api-sports.io/football/teams/487.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/c/ce/S.S._Lazio_badge.svg"
       },
       {
         name: "U.S. Lecce",
         short: "LEC",
         colors: ["#FFCC00", "#D01E25"],
-        logo: "https://media.api-sports.io/football/teams/867.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/2/23/US_Lecce_crest.svg"
       },
       {
         name: "A.C. Milan",
         short: "ACM",
         colors: ["#FB090B", "#000000"],
-        logo: "https://media.api-sports.io/football/teams/489.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg"
       },
       {
         name: "S.S.C. Napoli",
         short: "NAP",
         colors: ["#12A0D7", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/492.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/SSC_Napoli_2025_%28white_and_azure%29.svg"
       },
       {
         name: "Parma Calcio 1913",
         short: "PAR",
         colors: ["#F8C300", "#003087"],
-        logo: "https://media.api-sports.io/football/teams/523.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/9/97/Logo_Parma_Calcio_1913_%28adozione_2016%29.svg"
       },
       {
         name: "Pisa Sporting Club",
         short: "PIS",
         colors: ["#000000", "#0047AB"],
-        logo: "https://media.api-sports.io/football/teams/891.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/6/6b/Pisa_SC_crest.svg"
       },
       {
         name: "A.S. Roma",
         short: "ASR",
         colors: ["#8E1F2F", "#F0BC42"],
-        logo: "https://media.api-sports.io/football/teams/497.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/f/f7/AS_Roma_logo_%282017%29.svg"
       },
       {
         name: "Torino F.C.",
         short: "TOR",
         colors: ["#8B2635", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/503.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/2/2e/Torino_FC_Logo.svg"
       },
       {
         name: "Udinese Calcio",
         short: "UDI",
         colors: ["#000000", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/494.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/c/ce/Udinese_Calcio_logo.svg"
       }
     ]
   },
@@ -922,37 +922,37 @@ const TEAMS_DATABASE = {
         name: "Al-Hilal SFC",
         short: "HIL",
         colors: ["#0054A6", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/2939.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/5/55/Al_Hilal_SFC_Logo.svg"
       },
       {
         name: "Al-Duhail SC",
         short: "DUH",
         colors: ["#C4122F", "#808080"],
-        logo: "https://media.api-sports.io/football/teams/3412.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/8/81/Al-Duhail_SC_%28logo%29.svg"
       },
       {
         name: "Al-Ahli Saudi FC",
         short: "AHL",
         colors: ["#007A3D", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/2932.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/4/45/Al_Ahli_Saudi_FC_logo.svg"
       },
       {
         name: "Al-Sadd SC",
         short: "SAD",
         colors: ["#000000", "#FFFFFF"],
-        logo: "https://media.api-sports.io/football/teams/3410.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/c/c1/Al_Sadd_SC_logo.svg"
       },
       {
         name: "Al-Ittihad Club",
         short: "ITT",
         colors: ["#FEE100", "#000000"],
-        logo: "https://media.api-sports.io/football/teams/2938.png"
+        logo: "https://upload.wikimedia.org/wikipedia/en/8/87/Al-Ittihad_Club_%28Jeddah%29_logo.svg"
       },
       {
         name: "Al-Nassr FC",
         short: "NAS",
         colors: ["#FFF200", "#005BAC"],
-        logo: "https://media.api-sports.io/football/teams/2934.png"
+        logo: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Nassr_FC_Logo.svg"
       }
     ]
   },

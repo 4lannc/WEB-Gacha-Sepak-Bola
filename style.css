@@ -250,6 +250,20 @@ body {
   transform: scale(0.96);
 }
 
+/* Tombol Daftar Tim: Aksen Sky Blue / Neon */
+#btnOpenDirectory {
+  background: rgba(0, 126, 255, 0.08);
+  border-color: rgba(0, 126, 255, 0.5);
+  color: #8ec3ff;
+}
+
+#btnOpenDirectory:hover {
+  background: rgba(0, 126, 255, 0.22);
+  border-color: var(--sky-blue);
+  color: #ffffff;
+  box-shadow: 0 0 15px var(--sky-blue-glow);
+}
+
 /* Tombol Riwayat: Aksen Sky Blue (#007EFF) */
 #btnOpenHistory {
   background: rgba(0, 126, 255, 0.12);
@@ -1032,7 +1046,7 @@ body {
 }
 
 .modal-backdrop.hidden {
-  display: none;
+  display: none !important;
 }
 
 .modal-box {
@@ -1150,6 +1164,87 @@ body {
   gap: 0.5rem;
 }
 
+/* History Action Toolbar */
+.history-toolbar {
+  padding: 0.65rem 1rem;
+  background: rgba(14, 21, 38, 0.95);
+  border-bottom: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.history-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-history-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--amber-yellow);
+  background: rgba(255, 191, 0, 0.08);
+  border: 1px solid rgba(255, 191, 0, 0.25);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-history-toolbar:hover {
+  background: rgba(255, 191, 0, 0.18);
+  border-color: var(--amber-yellow);
+  color: #fff;
+}
+
+.history-selected-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0, 126, 255, 0.15);
+  border: 1px solid rgba(0, 126, 255, 0.3);
+  color: var(--sky-blue);
+}
+
+.history-toolbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.btn-history-action.btn-delete-selected {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ff6b7e;
+  background: rgba(239, 35, 60, 0.1);
+  border: 1px solid rgba(239, 35, 60, 0.35);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-history-action.btn-delete-selected:not(:disabled):hover {
+  background: rgba(239, 35, 60, 0.25);
+  border-color: #ff4d6d;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(239, 35, 60, 0.3);
+}
+
+.btn-history-action.btn-delete-selected:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
 .drawer-body {
   flex: 1;
   overflow-y: auto;
@@ -1159,7 +1254,11 @@ body {
   gap: 0.75rem;
 }
 
+/* History Card with Left Checkbox */
 .history-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   padding: 0.75rem 0.9rem;
   border-radius: var(--radius-md);
   background: rgba(12, 18, 34, 0.75);
@@ -1170,6 +1269,74 @@ body {
 .history-card:hover {
   border-color: var(--sky-blue);
   background: rgba(18, 28, 52, 0.85);
+}
+
+.history-card.selected {
+  border-color: var(--amber-yellow);
+  background: rgba(255, 191, 0, 0.06);
+  box-shadow: inset 0 0 12px rgba(255, 191, 0, 0.08);
+}
+
+.history-checkbox-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+  padding: 4px;
+}
+
+.history-checkbox-wrapper input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-checkbox-indicator {
+  width: 18px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.history-checkbox-wrapper:hover .custom-checkbox-indicator {
+  border-color: var(--amber-yellow);
+  background: rgba(255, 191, 0, 0.1);
+}
+
+.history-checkbox-wrapper input[type="checkbox"]:checked ~ .custom-checkbox-indicator {
+  background: var(--amber-yellow);
+  border-color: var(--amber-yellow);
+  box-shadow: 0 0 8px rgba(255, 191, 0, 0.5);
+}
+
+.custom-checkbox-indicator::after {
+  content: "";
+  display: none;
+  width: 5px;
+  height: 9px;
+  border: solid #000;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -2px;
+}
+
+.history-checkbox-wrapper input[type="checkbox"]:checked ~ .custom-checkbox-indicator::after {
+  display: block;
+}
+
+.history-card-main {
+  flex: 1;
+  min-width: 0;
 }
 
 .history-card-top {
@@ -1413,4 +1580,442 @@ body {
 @keyframes fadeInDown {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   13. TEAM DIRECTORY / KLUB KATALOG MODAL
+   ========================================================= */
+
+.directory-modal-container {
+  width: 95vw;
+  max-width: 1160px;
+  height: 88vh;
+  max-height: 840px;
+  background: #0c1222;
+  border: 1.5px solid rgba(0, 126, 255, 0.4);
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 126, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  animation: modalPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Header Modal */
+.directory-modal-header {
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(14, 21, 38, 0.95);
+  border-bottom: 1px solid var(--border-card);
+  flex-shrink: 0;
+}
+
+.directory-header-info {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.directory-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.directory-title-icon {
+  font-size: 1.35rem;
+}
+
+.directory-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  background: linear-gradient(135deg, #ffffff 40%, var(--sky-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.directory-total-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 191, 0, 0.12);
+  border: 1px solid rgba(255, 191, 0, 0.35);
+  color: var(--amber-yellow);
+  letter-spacing: 0.02em;
+}
+
+.directory-close-btn {
+  position: static;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+  font-size: 1.1rem;
+}
+
+.directory-close-btn:hover {
+  background: rgba(239, 35, 60, 0.2);
+  color: #ff6b7e;
+  border-color: rgba(239, 35, 60, 0.4);
+}
+
+/* Bilah Pencarian (Live Search) */
+.directory-search-bar-wrapper {
+  padding: 0.85rem 1.5rem 0.4rem;
+  background: #0c1222;
+  flex-shrink: 0;
+}
+
+.directory-search-input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.directory-search-input-box .search-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-slate-400);
+  pointer-events: none;
+}
+
+.directory-search-input {
+  width: 100%;
+  padding: 0.75rem 2.8rem 0.75rem 2.75rem;
+  background: rgba(18, 28, 52, 0.75);
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  color: var(--text-white);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  outline: none;
+  transition: var(--transition-normal);
+}
+
+.directory-search-input:focus {
+  border-color: var(--sky-blue);
+  background: rgba(18, 28, 52, 0.95);
+  box-shadow: 0 0 15px rgba(0, 126, 255, 0.25);
+}
+
+.directory-search-input::placeholder {
+  color: var(--text-slate-500);
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 0.85rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-slate-300);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: var(--transition-fast);
+}
+
+.btn-clear-search:hover {
+  background: rgba(239, 35, 60, 0.3);
+  color: #ffffff;
+}
+
+/* Tab Navigasi Kategori (Pill Buttons) */
+.directory-tabs-wrapper {
+  padding: 0.5rem 1.5rem 0.65rem;
+  background: #0c1222;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.directory-tabs-scroll {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scrollbar-width: thin;
+}
+
+.directory-tab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: rgba(18, 28, 52, 0.65);
+  color: var(--text-slate-400);
+  border: 1px solid var(--border-card);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  user-select: none;
+}
+
+.directory-tab-pill:hover {
+  background: rgba(18, 28, 52, 0.95);
+  color: var(--text-white);
+  border-color: var(--sky-blue);
+}
+
+.directory-tab-pill.active {
+  background: linear-gradient(135deg, #FFBF00, #d49f00);
+  color: #0a0e17;
+  font-weight: 800;
+  border-color: #FFBF00;
+  box-shadow: 0 0 14px rgba(255, 191, 0, 0.45);
+}
+
+.directory-tab-pill .tab-count,
+.directory-tab-pill .pill-count {
+  font-size: 0.68rem;
+  opacity: 0.85;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0.1rem 0.42rem;
+  border-radius: 999px;
+  margin-left: 0.25rem;
+}
+
+.directory-tab-pill.active .tab-count,
+.directory-tab-pill.active .pill-count {
+  background: rgba(0, 0, 0, 0.25);
+  color: #0a0e17;
+  font-weight: 800;
+}
+
+/* Directory Body / Grid */
+.directory-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.directory-results-meta {
+  font-size: 0.78rem;
+  color: var(--text-slate-400);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.directory-team-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 1200px) {
+  .directory-team-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+@media (max-width: 960px) {
+  .directory-team-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .directory-team-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+}
+@media (max-width: 480px) {
+  .directory-team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+  }
+}
+
+/* Kartu Tim */
+.dir-team-card {
+  background: #131a2a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.85rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dir-team-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 126, 255, 0.55);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(0, 126, 255, 0.25);
+}
+
+.dir-logo-wrapper {
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 23, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 8px;
+  margin-bottom: 0.65rem;
+  transition: transform 0.2s ease;
+}
+
+.dir-team-card:hover .dir-logo-wrapper {
+  transform: scale(1.05);
+  border-color: rgba(255, 191, 0, 0.35);
+}
+
+.dir-team-logo {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
+}
+
+.dir-team-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dir-team-name {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.25;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.dir-team-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-slate-300);
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .directory-modal-header {
+    padding: 0.85rem 1rem;
+  }
+  .directory-search-bar-wrapper {
+    padding: 0.65rem 1rem 0.3rem;
+  }
+  .directory-tabs-wrapper {
+    padding: 0.4rem 1rem 0.5rem;
+  }
+  .directory-modal-body {
+    padding: 0.75rem 1rem 1rem;
+  }
+  .dir-logo-wrapper {
+    width: 65px;
+    height: 65px;
+    padding: 5px;
+  }
+  .dir-team-card {
+    padding: 0.65rem 0.5rem;
+  }
+  .dir-team-name {
+    font-size: 0.82rem;
+  }
+  .dir-team-badge {
+    font-size: 0.6rem;
+    padding: 1px 5px;
+  }
+}
+
+/* Empty State */
+.directory-empty-state {
+  padding: 3.5rem 1rem;
+  text-align: center;
+  color: var(--text-slate-400);
+}
+
+.directory-empty-state .empty-icon {
+  font-size: 2.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.directory-empty-state h4 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-white);
+  margin-bottom: 0.3rem;
+}
+
+.directory-empty-state p {
+  font-size: 0.85rem;
+  color: var(--text-slate-400);
+}
+
+/* Custom Slim Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 126, 255, 0.35);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--amber-yellow);
 }

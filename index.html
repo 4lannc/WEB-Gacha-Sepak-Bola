@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#0a0e17">
   <meta name="description" content="Football Match Roulette - Acak 2 tim pertandingan sepak bola anti-bentrok untuk PS, Xbox, PC, dan konsol dengan efek suara dan simulator lempar koin.">
   <title>Football Match Roulette - Gacha Arena Pro</title>
@@ -46,6 +47,12 @@
 
       <!-- Quick Action Buttons -->
       <div class="header-actions">
+        <!-- Team Directory Button -->
+        <button id="btnOpenDirectory" class="btn-icon-text btn-header-directory" onclick="window.openDirectoryModal && window.openDirectoryModal()" title="Daftar Tim / Direktori Klub">
+          <span>📋</span>
+          <span class="hidden-sm">Daftar Tim</span>
+        </button>
+
         <!-- Coin Toss Button -->
         <button id="btnCoinTossModal" class="btn-icon-text" title="Lempar Koin (Penentu Stik 1 / Tuan Rumah)">
           <span>🪙</span>
@@ -351,6 +358,68 @@
     </div>
   </div>
 
+  <!-- ================= TEAM DIRECTORY MODAL ================= -->
+  <div id="directoryModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="directoryModalTitle">
+    <div class="directory-modal-container">
+      
+      <!-- Modal Header -->
+      <div class="directory-modal-header">
+        <div class="directory-header-info">
+          <div class="directory-title-wrapper">
+            <span class="directory-title-icon">📋</span>
+            <h3 id="directoryModalTitle" class="directory-modal-title">Direktori Klub & Timnas</h3>
+          </div>
+          <span id="directoryTotalBadge" class="directory-total-badge">201 Tim Terdaftar</span>
+        </div>
+        <button id="btnCloseDirectory" class="modal-close-btn directory-close-btn" onclick="window.closeDirectoryModal && window.closeDirectoryModal()" title="Tutup Direktori (Esc)">✕</button>
+      </div>
+
+      <!-- Live Search Bar -->
+      <div class="directory-search-bar-wrapper">
+        <div class="directory-search-input-box">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="directorySearchInput" 
+            class="directory-search-input" 
+            placeholder="Cari nama klub atau negara..." 
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button id="btnClearSearch" class="btn-clear-search hidden" title="Hapus pencarian">✕</button>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills (Horizontal Scroll) -->
+      <div class="directory-tabs-wrapper">
+        <div id="directoryCategoryTabs" class="directory-tabs-scroll custom-scrollbar">
+          <!-- Dynamically populated category buttons -->
+        </div>
+      </div>
+
+      <!-- Directory Body (Grid + Empty State) -->
+      <div class="directory-modal-body custom-scrollbar">
+        <div class="directory-results-meta">
+          <span id="directoryFilteredCount">Menampilkan 201 tim</span>
+        </div>
+
+        <div id="directoryTeamGrid" class="directory-team-grid">
+          <!-- Team Cards rendered here -->
+        </div>
+
+        <div id="directoryEmptyState" class="directory-empty-state hidden">
+          <div class="empty-icon">🔍</div>
+          <h4>Tidak ada tim yang cocok</h4>
+          <p>Coba kata kunci pencarian lain atau pilih kategori yang berbeda.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ================= MATCH HISTORY DRAWER ================= -->
   <aside id="historyDrawer" class="history-drawer">
     <div class="drawer-header">
@@ -364,13 +433,36 @@
       <button id="btnCloseHistory" class="modal-close-btn" style="position: static;" title="Tutup Riwayat">✕</button>
     </div>
 
+    <!-- Toolbar Aksi Riwayat (History Action Toolbar) -->
+    <div id="historyToolbar" class="history-toolbar">
+      <div class="history-toolbar-left">
+        <button id="btnSelectAllHistory" class="btn-history-toolbar" title="Pilih Semua / Batal Pilih">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          <span id="selectAllHistoryText">Pilih Semua</span>
+        </button>
+        <span id="historySelectedCountBadge" class="history-selected-badge" style="display: none;">0 terpilih</span>
+      </div>
+      <div class="history-toolbar-right">
+        <button id="btnDeleteSelectedHistory" class="btn-history-action btn-delete-selected" disabled title="Hapus pertandingan yang dicentang">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          <span>Hapus yang Dipilih</span>
+        </button>
+      </div>
+    </div>
+
     <!-- History List Items -->
     <div id="historyList" class="drawer-body"></div>
 
     <!-- Drawer Footer -->
     <div class="drawer-footer">
       <button id="btnClearHistory" class="btn-clear-history">
-        Hapus Seluruh Riwayat
+        Hapus Semua
       </button>
     </div>
   </aside>
